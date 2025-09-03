@@ -30,4 +30,5 @@ Combining dashboard nodes with passthrough nodes for a nice uncluttered dashboar
 
 # Tip
 Passthrough nodes will show text above them if you change their titles
-<img width="1307" height="719" alt="image" src="https://github.com/user-attachments/assets/f873331b-183f-4706-9178-bb771ec2d551" />
+<img width="1253" height="670" alt="image" src="https://github.com/user-attachments/assets/2b2cacfe-8f25-45de-8114-dfece7c7ec4c" />
+
