@@ -37,7 +37,8 @@ import {
     TOGGLE_INACTIVE_COLOR,
     HANDLE_COLOR,
     HANDLE_BORDER_ACTIVE,
-    HANDLE_BORDER_INACTIVE
+    HANDLE_BORDER_INACTIVE,
+    DROPDOWN_BG_COLOR
 } from "./CRZConfig.js";
 
 // Layout constants
@@ -65,6 +66,12 @@ class CRZDashboardNode {
         this.capture = false;
         this.captureSlider = -1;
 
+        // Boolean toggle animation properties
+        this.booleanAnimationProgress = 0;
+        this.booleanTargetProgress = 0;
+        this.booleanAnimationSpeed = 8; // Higher = faster animation
+        this.isBooleanAnimating = false;
+
         this.node.onAdded = function() {
             // Hide widget and set output
             if (this.widgets && this.widgets[0]) {
@@ -86,6 +93,14 @@ class CRZDashboardNode {
 
         this.node.onGraphConfigured = function() {
             this.configured = true;
+            
+            // Sync boolean animation state with actual value on load
+            if (this.crzDashboardNode && this.properties.slider_type === "BOOLEAN") {
+                this.crzDashboardNode.booleanAnimationProgress = this.properties.slider_value ? 1 : 0;
+                this.crzDashboardNode.booleanTargetProgress = this.crzDashboardNode.booleanAnimationProgress;
+                this.crzDashboardNode.isBooleanAnimating = false;
+            }
+            
             this.onPropertyChanged();
             this.updateSliderTypeFromConnections();
         };
@@ -115,6 +130,12 @@ class CRZDashboardNode {
                 // BOOLEAN TOGGLE LOGIC
                 this.properties.slider_value = Boolean(this.properties.slider_value);
                 this.properties.slider_decimals = 0;
+                
+                // Start animation when boolean value changes
+                if (this.crzDashboardNode && propName === "slider_value") {
+                    this.crzDashboardNode.booleanTargetProgress = this.properties.slider_value ? 1 : 0;
+                    this.crzDashboardNode.startBooleanAnimation();
+                }
             } else if (sliderType === "COMBO") {
                 // COMBO DROPDOWN LOGIC
                 const options = this.properties.slider_options || [""];
@@ -205,14 +226,15 @@ class CRZDashboardNode {
                 
                 return true;
             } else if (sliderType === "BOOLEAN") {
-                // BOOLEAN TOGGLE LOGIC
-                const toggleWidth = TOGGLE_WIDTH;
+                // BOOLEAN TOGGLE LOGIC - expanded toggle
+                const expandedToggleWidth = TOGGLE_WIDTH + 10;
+                const expandedToggleLeft = this.size[0] - TRACK_RIGHT_PADDING + 40;
                 const trackY = sliderY + TRACK_VERTICAL_OFFSET;
                 const clickAreaTop = trackY - TOGGLE_HEIGHT;
                 const clickAreaBottom = trackY + TOGGLE_HEIGHT;
                 
-                // Check if click is in toggle area (updated for new positioning)
-                if (e.canvasX < this.pos[0] + trackLeft || e.canvasX > this.pos[0] + trackLeft + toggleWidth) return false;
+                // Check if click is in expanded toggle area
+                if (e.canvasX < this.pos[0] + expandedToggleLeft || e.canvasX > this.pos[0] + expandedToggleLeft + expandedToggleWidth) return false;
                 if (e.canvasY < this.pos[1] + clickAreaTop || e.canvasY > this.pos[1] + clickAreaBottom) return false;
 
                 // Toggle the boolean value
@@ -442,6 +464,64 @@ class CRZDashboardNode {
 
         this.node.size = [300, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
     }
+
+    // Boolean animation methods
+    startBooleanAnimation() {
+        this.isBooleanAnimating = true;
+        this.animateBooleanStep();
+    }
+    
+    animateBooleanStep() {
+        if (!this.isBooleanAnimating) return;
+        
+        // Request animation frame for smooth animation
+        requestAnimationFrame(() => this.animateBooleanStep());
+        
+        // Mark canvas as dirty to trigger redraw
+        if (this.node.graph && this.node.graph.setDirtyCanvas) {
+            this.node.graph.setDirtyCanvas(true);
+        }
+    }
+    
+    updateBooleanAnimation() {
+        if (Math.abs(this.booleanAnimationProgress - this.booleanTargetProgress) < 0.01) {
+            this.booleanAnimationProgress = this.booleanTargetProgress;
+            this.isBooleanAnimating = false;
+            return;
+        }
+        
+        // Smooth easing animation
+        const diff = this.booleanTargetProgress - this.booleanAnimationProgress;
+        this.booleanAnimationProgress += diff * (this.booleanAnimationSpeed * 0.016); // 60fps normalized
+    }
+
+    // Color interpolation method for rgba colors
+    interpolateColor(color1, color2, t) {
+        // Parse rgba colors
+        const parseRgba = (color) => {
+            const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+            if (match) {
+                return {
+                    r: parseInt(match[1]),
+                    g: parseInt(match[2]),
+                    b: parseInt(match[3]),
+                    a: match[4] ? parseFloat(match[4]) : 1
+                };
+            }
+            return { r: 255, g: 255, b: 255, a: 1 }; // fallback to white
+        };
+        
+        const c1 = parseRgba(color1);
+        const c2 = parseRgba(color2);
+        
+        // Interpolate
+        const r = Math.round(c1.r + (c2.r - c1.r) * t);
+        const g = Math.round(c1.g + (c2.g - c1.g) * t);
+        const b = Math.round(c1.b + (c2.b - c1.b) * t);
+        const a = c1.a + (c2.a - c1.a) * t;
+        
+        return `rgba(${r}, ${g}, ${b}, ${a})`;
+    }
 }
 
 app.registerExtension({
@@ -491,6 +571,13 @@ app.registerExtension({
                 
                 this.crzDashboardNode = new CRZDashboardNode(this);
                 
+                // Initialize boolean animation state to match current value
+                if (this.crzDashboardNode && this.properties.slider_type === "BOOLEAN") {
+                    this.crzDashboardNode.booleanAnimationProgress = this.properties.slider_value ? 1 : 0;
+                    this.crzDashboardNode.booleanTargetProgress = this.crzDashboardNode.booleanAnimationProgress;
+                    this.crzDashboardNode.isBooleanAnimating = false;
+                }
+                
                 // Set explicit size to match Dashboard Multi
                 // this.size = [250, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
                 
@@ -508,6 +595,11 @@ app.registerExtension({
                 
                 // Mark as configured
                 this.configured = true;
+
+                // Update boolean animation if needed
+                if (this.crzDashboardNode && this.properties.slider_type === "BOOLEAN") {
+                    this.crzDashboardNode.updateBooleanAnimation();
+                }
 
                 const value = this.properties.slider_value ?? 0.0;
                 const min = this.properties.slider_min ?? 0.0;
@@ -550,17 +642,17 @@ app.registerExtension({
                     const cornerRadius = 3;
                     
                     // Draw rounded dropdown background (matching Dropdown.js)
-                    ctx.fillStyle = isActive ? "#2a2a2a" : "#2b2b2b";
+                    ctx.fillStyle = isActive ? DROPDOWN_BG_COLOR : "#2b2b2b";
                     ctx.beginPath();
                     ctx.roundRect(dropdownLeft, dropdownY, dropdownWidth, dropdownHeight, cornerRadius);
                     ctx.fill();
                     
                     // Draw rounded dropdown border (matching Dropdown.js)
-                    ctx.strokeStyle = isActive ? "#555" : "#333";
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.roundRect(dropdownLeft, dropdownY, dropdownWidth, dropdownHeight, cornerRadius);
-                    ctx.stroke();
+                    // ctx.strokeStyle = isActive ? "#555" : "#333";
+                    // ctx.lineWidth = 1;
+                    // ctx.beginPath();
+                    // ctx.roundRect(dropdownLeft, dropdownY, dropdownWidth, dropdownHeight, cornerRadius);
+                    // ctx.stroke();
                     
                     // Draw current value (centered in dropdown, matching Dropdown.js)
                     ctx.fillStyle = valueColor;
@@ -571,28 +663,33 @@ app.registerExtension({
                     if (ctx.measureText(selectedValue).width > maxWidth) {
                         truncatedValue = selectedValue.substring(0, 8) + "..";
                     }
-                    ctx.fillText(truncatedValue, dropdownLeft + dropdownWidth/2, sliderY + 15);
+                    ctx.fillText(truncatedValue, dropdownLeft + dropdownWidth/2, sliderY + 14);
                     
                 } else if (type === "BOOLEAN") {
-                    // BOOLEAN TOGGLE DRAWING
-                    ctx.fillStyle = valueColor;
-                    ctx.textAlign = "right";
-                    ctx.fillText(value ? "true" : "false", this.size[0] - VALUE_RIGHT_PADDING, sliderY + 15);
+                    // BOOLEAN TOGGLE DRAWING WITH ANIMATION (expanded, no text)
+                    // Value text removed - toggle fills the space
                     
-                    // Draw toggle switch positioned on the right side
-                    const toggleLeft = this.size[0] - TRACK_RIGHT_PADDING;
+                    // Draw expanded toggle switch - wider and more centered
+                    const expandedToggleWidth = TOGGLE_WIDTH + 10; // Make it wider
+                    const toggleLeft = this.size[0] - TRACK_RIGHT_PADDING + 40; // Move it left a bit
                     const toggleY = sliderY + TRACK_VERTICAL_OFFSET;
                     
-                    // Toggle background (same as Dashboard Multi)
-                    ctx.fillStyle = value ? TOGGLE_ACTIVE_COLOR : TOGGLE_INACTIVE_COLOR;
+                    // Get animation progress for smooth transitions
+                    const progress = this.crzDashboardNode ? this.crzDashboardNode.booleanAnimationProgress : (value ? 1 : 0);
+                    
+                    // Toggle background - interpolate colors during animation
+                    const bgColor = this.crzDashboardNode ? 
+                        this.crzDashboardNode.interpolateColor(TOGGLE_INACTIVE_COLOR, TOGGLE_ACTIVE_COLOR, progress) :
+                        (value ? TOGGLE_ACTIVE_COLOR : TOGGLE_INACTIVE_COLOR);
+                    ctx.fillStyle = bgColor;
                     ctx.beginPath();
-                    ctx.roundRect(toggleLeft, toggleY - TOGGLE_HEIGHT/2, TOGGLE_WIDTH, TOGGLE_HEIGHT, TOGGLE_CORNER_RADIUS);
+                    ctx.roundRect(toggleLeft, toggleY - TOGGLE_HEIGHT/2, expandedToggleWidth, TOGGLE_HEIGHT, TOGGLE_CORNER_RADIUS);
                     ctx.fill();
                     
-                    // Toggle handle (same as Dashboard Multi)
-                    const handleX = value ? 
-                        toggleLeft + TOGGLE_WIDTH - HANDLE_SIZE - HANDLE_PADDING : // Right position when true
-                        toggleLeft + HANDLE_PADDING; // Left position when false
+                    // Animated toggle handle position - use expanded width
+                    const leftPos = toggleLeft + HANDLE_PADDING;
+                    const rightPos = toggleLeft + expandedToggleWidth - HANDLE_SIZE - HANDLE_PADDING;
+                    const handleX = leftPos + (rightPos - leftPos) * progress;
                     const handleY = toggleY - HANDLE_SIZE/2;
                     
                     ctx.fillStyle = HANDLE_COLOR;
@@ -600,8 +697,11 @@ app.registerExtension({
                     ctx.roundRect(handleX, handleY, HANDLE_SIZE, HANDLE_SIZE, HANDLE_CORNER_RADIUS);
                     ctx.fill();
                     
-                    // Handle border
-                    ctx.strokeStyle = value ? HANDLE_BORDER_ACTIVE : HANDLE_BORDER_INACTIVE;
+                    // Handle border - interpolate colors during animation
+                    const borderColor = this.crzDashboardNode ? 
+                        this.crzDashboardNode.interpolateColor(HANDLE_BORDER_INACTIVE, HANDLE_BORDER_ACTIVE, progress) :
+                        (value ? HANDLE_BORDER_ACTIVE : HANDLE_BORDER_INACTIVE);
+                    ctx.strokeStyle = borderColor;
                     ctx.lineWidth = 1;
                     ctx.beginPath();
                     ctx.roundRect(handleX, handleY, HANDLE_SIZE, HANDLE_SIZE, HANDLE_CORNER_RADIUS);
@@ -655,16 +755,24 @@ app.registerExtension({
                 const sliderY = this.pos[1] + NODE_PADDING;
                 const currentType = this.properties.slider_type || "FLOAT";
                 
-                // Double-click on value area to edit/toggle value
-                if (e.canvasX > this.pos[0] + this.size[0] - VALUE_RIGHT_PADDING - 40 &&
-                    e.canvasY > sliderY && e.canvasY < sliderY + SLIDER_HEIGHT) {
+                // Double-click on expanded toggle area for boolean, or value area for others
+                if (currentType === "BOOLEAN") {
+                    // Check expanded toggle area for boolean
+                    const expandedToggleWidth = TOGGLE_WIDTH + 10;
+                    const expandedToggleLeft = this.pos[0] + this.size[0] - TRACK_RIGHT_PADDING + 40;
+                    const toggleY = sliderY + TRACK_VERTICAL_OFFSET;
                     
-                    if (currentType === "BOOLEAN") {
+                    if (e.canvasX > expandedToggleLeft && e.canvasX < expandedToggleLeft + expandedToggleWidth &&
+                        e.canvasY > toggleY - TOGGLE_HEIGHT && e.canvasY < toggleY + TOGGLE_HEIGHT) {
                         // Toggle boolean value directly
                         this.properties.slider_value = !this.properties.slider_value;
                         this.onPropertyChanged('slider_value');
                         return true;
-                    } else if (currentType === "COMBO") {
+                    }
+                } else if (e.canvasX > this.pos[0] + this.size[0] - VALUE_RIGHT_PADDING - 40 &&
+                    e.canvasY > sliderY && e.canvasY < sliderY + SLIDER_HEIGHT) {
+                    
+                    if (currentType === "COMBO") {
                         // Show combo dropdown menu (matching Dropdown.js)
                         const options = this.properties.slider_options || [""];
                         if (options.length > 1) {

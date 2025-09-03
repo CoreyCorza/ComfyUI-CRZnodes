@@ -307,7 +307,7 @@ app.registerExtension({
                 if (ctx.measureText(truncatedValue).width > maxWidth) {
                     truncatedValue = truncatedValue.substring(0, 8) + "..";
                 }
-                ctx.fillText(truncatedValue, dropdownLeft + dropdownWidth/2, sliderY + 15);
+                ctx.fillText(truncatedValue, dropdownLeft + dropdownWidth/2, sliderY + 14);
             };
         }
     }
