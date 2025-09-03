@@ -21,7 +21,8 @@ All nodes can be found easily by searching for "crz"
 - Switch
 - Image Selector 
 - Dashboard Node (experimental, see note down the bottom of page)  
-<img width="1537" height="762" alt="image" src="https://github.com/user-attachments/assets/059f2d37-cc4c-4405-8237-7fd4a6c486d6" />  
+<img width="1116" height="1154" alt="image" src="https://github.com/user-attachments/assets/66fee248-24c4-4ed6-9a61-5b5c29fa05ee" />
+
 
 #### Configuring
 To change the min/max range of the sliders, double click on the slider handle.  
