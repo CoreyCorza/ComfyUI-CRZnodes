@@ -1,5 +1,5 @@
 # Installation  
-Git clone like you normally do to the custom nodes folder.   
+Git clone like you normally do to the `custom_nodes` folder.   
 There are no requirements.  
 
 Or install via the comfyui manager using this repos url
