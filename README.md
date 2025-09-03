@@ -15,6 +15,7 @@ All nodes can be found easily by searching for "crz"
 - Float Slider
 - Integer Slider
 - Dropdown
+- Custom Dropdown (user defined)
 - Switch
 - Image Selector 
 - (experimental, see note down the bottom of page) Dashboard Node
@@ -24,12 +25,19 @@ To change the min/max range of the sliders, double click on the slider handle.
 The description tells you what each value represents.  
 Here the min is 1, the max is set to 10, and the slider handle will step in increments of 1.  
 <img width="975" height="324" alt="image" src="https://github.com/user-attachments/assets/d06d0f11-c8ef-4731-bf06-0c034ef47c9e" />
+
 Same with the float slider.  
 Min, max, step increments, and how many decimal places.  
 <img width="1152" height="401" alt="image" src="https://github.com/user-attachments/assets/c286569b-7973-46a0-86ec-5f2a82e77da4" />
 
+Configure your own custom dropdowns with items seperated by commas
+Currently supports strings, ints and floats
+<img width="1351" height="441" alt="brave_Lrfz41D0Jp" src="https://github.com/user-attachments/assets/f0675d2b-7e9e-4aa2-b6a5-f95d15d8fa57" />
+<img width="714" height="305" alt="brave_io7CVTrxIc" src="https://github.com/user-attachments/assets/c8dd8b19-e9a9-4846-8005-535934c7608d" />
+
 To give these nodes custom labels, double click on the text
 <img width="1016" height="370" alt="image" src="https://github.com/user-attachments/assets/977c6554-e502-4547-a10e-d52ed125130b" />
+
 
 
 # Passthrough Node
