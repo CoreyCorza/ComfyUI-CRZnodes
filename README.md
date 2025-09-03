@@ -2,7 +2,7 @@
 Git clone like you normally do to the custom nodes folder.   
 There are no requirements.  
 
-Or install via the comfyui manager
+Or install via the comfyui manager using this repos url
 <img width="1886" height="1507" alt="image" src="https://github.com/user-attachments/assets/caa4594e-b65a-4ca1-8f98-5e903a97251a" />
 
 # Dashboard Nodes
