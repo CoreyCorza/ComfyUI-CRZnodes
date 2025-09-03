@@ -56,3 +56,10 @@ I dont usually have node badges on. They're useful to see what nodes came from w
 They get in the way, they force me to have nodes further apart etc.
 So I usually have node badges turned off, otherwise you end up with this
 <img width="894" height="722" alt="image" src="https://github.com/user-attachments/assets/2e4ff48b-f640-4f47-9291-657ea0829a40" />
+
+# Experimental
+The dashboard node should just automatically detect what its connected to and change its type.  
+Meant to be any all-in-one replacement for the other individual dashboard nodes. But I dont want to break my old workflows just yet, and haven't tested it much.  
+So it does its own thing for now.
+![brave_B9bUJKXOM1](https://github.com/user-attachments/assets/efc795a0-95cc-4c6c-8ab9-87b79fe41a8c)
+
