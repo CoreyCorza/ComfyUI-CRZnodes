@@ -1,5 +1,5 @@
 # Installation  
-Git clone like you normally do to the `custom_nodes` folder.   
+git clone like you normally do to the `custom_nodes` folder -->  `git clone https://github.com/CoreyCorza/ComfyUI-CRZnodes.git`  
 There are no requirements.  
 
 Or install via the comfyui manager using url    `https://github.com/CoreyCorza/ComfyUI-CRZnodes.git`
@@ -35,11 +35,6 @@ Hover over a passthrough node to see connections.
 Hold CTRL while hovering over a passthrough node to see all connections for all passthrough nodes  
 ![brave_2oqCzWCjcw](https://github.com/user-attachments/assets/f410ca6c-0ac9-4b67-bcf2-5268b3b7b998)
 
-# Its Comfy
-Combining dashboard nodes with passthrough nodes for a nice uncluttered dashboard
-<img width="984" height="1189" alt="image" src="https://github.com/user-attachments/assets/eae490c0-cfc3-4e7e-8939-0598d4ac45b4" />
-
-# Tip
 Passthrough nodes will show text above them if you change their titles.  
 Right-click on passthrough node > Properties Panel > Edit the title
 <img width="1253" height="670" alt="image" src="https://github.com/user-attachments/assets/2b2cacfe-8f25-45de-8114-dfece7c7ec4c" />
@@ -52,6 +47,19 @@ There may be cases where they don't - Let me know.
 # Preferences
 A `CRZ` button should be shown in the bottom left corner of the viewport.  
 You can also summon the preferences with ctrl+shift+c.  
-Not sure about this keyboard shortcut as some people might use that for other things. If its a problem let me know, might be able to work something else out.
-![brave_WKj9cKlQ85](https://github.com/user-attachments/assets/c10521d3-e0fc-4057-8581-d377ce737e52)
+Not sure about this keyboard shortcut as some people might use that for other things. If its a problem let me know.
+![brave_7tEkczIbU8](https://github.com/user-attachments/assets/eb844abc-f997-4031-910a-652bb4f7ac02)
+
+
+# Dang Badges..
+I dont usually have node badges on. They're useful to see what nodes came from where.. but they clutter everything. They are visual clutter..
+They get in the way, they force me to have nodes further apart etc.
+So I usually have node badges turned off, otherwise you end up with this
+<img width="894" height="722" alt="image" src="https://github.com/user-attachments/assets/2e4ff48b-f640-4f47-9291-657ea0829a40" />
+
+# Experimental
+The dashboard node should just automatically detect what its connected to and change its type.  
+Meant to be any all-in-one replacement for the other individual dashboard nodes. But I dont want to break my old workflows just yet, and haven't tested it much.  
+So it does its own thing for now.
+![brave_B9bUJKXOM1](https://github.com/user-attachments/assets/efc795a0-95cc-4c6c-8ab9-87b79fe41a8c)
 
