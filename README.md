@@ -37,3 +37,8 @@ Passthrough nodes will show text above them if you change their titles.
 Right-click on passthrough node > Properties Panel > Edit the title
 <img width="1253" height="670" alt="image" src="https://github.com/user-attachments/assets/2b2cacfe-8f25-45de-8114-dfece7c7ec4c" />
 
+# Dropdowns Note
+Dropdowns automatically inherit the list from whatever they were connected to. 
+There may be cases where they don't - Let me know.
+<img width="1106" height="1248" alt="image" src="https://github.com/user-attachments/assets/c7079f5c-dd2f-44f7-8eaa-8dc70445082c" />
+
