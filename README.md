@@ -19,7 +19,7 @@ All nodes can be found easily by searching for "crz"
 - Switch
 - Image Selector 
 - Dashboard Node (experimental, see note down the bottom of page) 
-<img width="1537" height="762" alt="image" src="https://github.com/user-attachments/assets/059f2d37-cc4c-4405-8237-7fd4a6c486d6" />
+<img width="1537" height="762" alt="image" src="https://github.com/user-attachments/assets/059f2d37-cc4c-4405-8237-7fd4a6c486d6" />  
 
 To change the min/max range of the sliders, double click on the slider handle.  
 The description tells you what each value represents.  
@@ -30,7 +30,7 @@ Same with the float slider.
 Min, max, step increments, and how many decimal places.  
 <img width="1152" height="401" alt="image" src="https://github.com/user-attachments/assets/c286569b-7973-46a0-86ec-5f2a82e77da4" />
 
-Configure your own custom dropdowns with items seperated by commas
+Configure your own custom dropdowns with items seperated by commas.  
 Currently supports strings, ints and floats
 <img width="1351" height="441" alt="brave_Lrfz41D0Jp" src="https://github.com/user-attachments/assets/f0675d2b-7e9e-4aa2-b6a5-f95d15d8fa57" />
 <img width="714" height="305" alt="brave_io7CVTrxIc" src="https://github.com/user-attachments/assets/c8dd8b19-e9a9-4846-8005-535934c7608d" />
