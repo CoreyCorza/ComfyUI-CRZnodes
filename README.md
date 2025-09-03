@@ -50,3 +50,8 @@ You can also summon the preferences with ctrl+shift+c.
 Not sure about this keyboard shortcut as some people might use that for other things. If its a problem let me know, might be able to work something else out.
 ![brave_WKj9cKlQ85](https://github.com/user-attachments/assets/c10521d3-e0fc-4057-8581-d377ce737e52)
 
+# Dang Badges..
+I dont usually have node badges on. They're useful to see what nodes came from where.. but they clutter everything. They are visual clutter..
+They get in the way, they force me to have nodes further apart etc.
+So I usually have node badges turned off, otherwise you end up with this
+<img width="894" height="722" alt="image" src="https://github.com/user-attachments/assets/2e4ff48b-f640-4f47-9291-657ea0829a40" />
