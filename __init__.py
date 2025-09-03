@@ -9,6 +9,7 @@ from .float_to_int import NODE_CLASS_MAPPINGS as FloatToIntMappings, NODE_DISPLA
 from .int_to_float import NODE_CLASS_MAPPINGS as IntToFloatMappings, NODE_DISPLAY_NAME_MAPPINGS as IntToFloatDisplayMappings
 from .dashboard_node import NODE_CLASS_MAPPINGS as DashboardSingleMappings, NODE_DISPLAY_NAME_MAPPINGS as DashboardSingleDisplayMappings
 from .dropdown import NODE_CLASS_MAPPINGS as DropdownMappings, NODE_DISPLAY_NAME_MAPPINGS as DropdownDisplayMappings
+from .custom_dropdown import NODE_CLASS_MAPPINGS as CustomDropdownMappings, NODE_DISPLAY_NAME_MAPPINGS as CustomDropdownDisplayMappings
 from .image_selector import NODE_CLASS_MAPPINGS as ImageSelectorMappings, NODE_DISPLAY_NAME_MAPPINGS as ImageSelectorDisplayMappings
 from .passthrough import NODE_CLASS_MAPPINGS as PassthroughMappings, NODE_DISPLAY_NAME_MAPPINGS as PassthroughDisplayMappings
 from .switch import NODE_CLASS_MAPPINGS as SwitchMappings, NODE_DISPLAY_NAME_MAPPINGS as SwitchDisplayMappings
@@ -24,6 +25,7 @@ NODE_CLASS_MAPPINGS.update(FloatToIntMappings)
 NODE_CLASS_MAPPINGS.update(IntToFloatMappings)
 NODE_CLASS_MAPPINGS.update(DashboardSingleMappings)
 NODE_CLASS_MAPPINGS.update(DropdownMappings)
+NODE_CLASS_MAPPINGS.update(CustomDropdownMappings)
 NODE_CLASS_MAPPINGS.update(ImageSelectorMappings)
 NODE_CLASS_MAPPINGS.update(PassthroughMappings)
 NODE_CLASS_MAPPINGS.update(SwitchMappings)
@@ -38,6 +40,7 @@ NODE_DISPLAY_NAME_MAPPINGS.update(FloatToIntDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(IntToFloatDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(DashboardSingleDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(DropdownDisplayMappings)
+NODE_DISPLAY_NAME_MAPPINGS.update(CustomDropdownDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(ImageSelectorDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(PassthroughDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(SwitchDisplayMappings)
