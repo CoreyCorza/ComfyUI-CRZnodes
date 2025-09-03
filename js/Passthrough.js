@@ -317,10 +317,10 @@ app.registerExtension({
                 // Check preferences
                 const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
                 const alwaysShow = prefs.always_show_passthrough === true;
-                const alwaysHideCRZ = prefs.always_hide_crz_connections === true;
+                const alwaysShowDashboard = prefs.always_show_dashboard_connections === true;
                 
-                // If "always hide CRZ node connections" is enabled, hide all connections to/from CRZ nodes
-                if (alwaysHideCRZ) {
+                // If "always show dashboard connections" is disabled, hide all connections to/from CRZ nodes
+                if (!alwaysShowDashboard) {
                     const hasCRZOrigin = originNode.isCRZNode;
                     const hasCRZTarget = targetNode.isCRZNode;
                     if (hasCRZOrigin || hasCRZTarget) {
@@ -366,11 +366,11 @@ app.registerExtension({
             }
             // --- END: CRZ Passthrough link visibility logic ---
 
-            // Check if "always hide CRZ node connections" is enabled for non-passthrough connections
+            // Check if "always show dashboard connections" is disabled for non-passthrough connections
             const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
-            const alwaysHideCRZ = prefs.always_hide_crz_connections === true;
+            const alwaysShowDashboard = prefs.always_show_dashboard_connections === true;
             
-            if (alwaysHideCRZ) {
+            if (!alwaysShowDashboard) {
                 const hasCRZOrigin = originNode.isCRZNode;
                 const hasCRZTarget = targetNode.isCRZNode;
                 if (hasCRZOrigin || hasCRZTarget) {
