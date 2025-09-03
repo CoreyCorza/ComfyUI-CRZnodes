@@ -27,3 +27,7 @@ Hold CTRL while hovering over a passthrough node to see all connections for all 
 # Its Comfy
 Combining dashboard nodes with passthrough nodes for a nice uncluttered dashboard
 <img width="984" height="1189" alt="image" src="https://github.com/user-attachments/assets/eae490c0-cfc3-4e7e-8939-0598d4ac45b4" />
+
+# Tip
+Passthrough nodes will show text above them if you change their titles
+<img width="1307" height="719" alt="image" src="https://github.com/user-attachments/assets/f873331b-183f-4706-9178-bb771ec2d551" />
