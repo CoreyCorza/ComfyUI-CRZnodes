@@ -6,7 +6,7 @@ Or install via the comfyui manager using url    `https://github.com/CoreyCorza/C
 <img width="1886" height="1507" alt="image" src="https://github.com/user-attachments/assets/caa4594e-b65a-4ca1-8f98-5e903a97251a" />
 
 # Search
-All nodes can be found easily by just searching for "crz"
+All nodes can be found easily by searching for "crz"
 <img width="1237" height="728" alt="image" src="https://github.com/user-attachments/assets/9ca8c9ab-ed4b-436b-a69b-179759cb573c" />
 
 
@@ -16,7 +16,7 @@ All nodes can be found easily by just searching for "crz"
 - Integer Slider
 - Dropdown
 - Switch
-- Image Selector Node
+- Image Selector 
 - (experimental, see note down the bottom of page) Dashboard Node
 <img width="1537" height="762" alt="image" src="https://github.com/user-attachments/assets/059f2d37-cc4c-4405-8237-7fd4a6c486d6" />
 
