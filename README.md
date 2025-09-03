@@ -1,5 +1,5 @@
 # Installation  
-Git clone like you normally do to the `custom_nodes` folder.   
+git clone like you normally do to the `custom_nodes` folder -->  `git clone https://github.com/CoreyCorza/ComfyUI-CRZnodes.git`
 There are no requirements.  
 
 Or install via the comfyui manager using url    `https://github.com/CoreyCorza/ComfyUI-CRZnodes.git`
