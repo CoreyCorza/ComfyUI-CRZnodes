@@ -20,7 +20,8 @@ All nodes can be found easily by searching for "crz"
 - Custom Dropdown (user defined)
 - Switch
 - Image Selector 
-- Dashboard Node (experimental, see note down the bottom of page)  
+- Dashboard Node (experimental, see note down the bottom of page)
+- Compact int-to-float / float-to-int
 <img width="1116" height="1154" alt="image" src="https://github.com/user-attachments/assets/66fee248-24c4-4ed6-9a61-5b5c29fa05ee" />
 
 
