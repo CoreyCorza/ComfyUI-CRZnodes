@@ -35,11 +35,6 @@ Hover over a passthrough node to see connections.
 Hold CTRL while hovering over a passthrough node to see all connections for all passthrough nodes  
 ![brave_2oqCzWCjcw](https://github.com/user-attachments/assets/f410ca6c-0ac9-4b67-bcf2-5268b3b7b998)
 
-# Its Comfy
-Combining dashboard nodes with passthrough nodes for a nice uncluttered dashboard
-<img width="984" height="1189" alt="image" src="https://github.com/user-attachments/assets/eae490c0-cfc3-4e7e-8939-0598d4ac45b4" />
-
-# Tip
 Passthrough nodes will show text above them if you change their titles.  
 Right-click on passthrough node > Properties Panel > Edit the title
 <img width="1253" height="670" alt="image" src="https://github.com/user-attachments/assets/2b2cacfe-8f25-45de-8114-dfece7c7ec4c" />
