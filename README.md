@@ -1,5 +1,6 @@
 # Installation  
-Just git clone like you normally would to custom nodes folder. There is no requirements.  
+Just git clone like you normally do to custom nodes folder. 
+There are no requirements.  
 
 # Dashboard Nodes
 - Boolean Toggle
