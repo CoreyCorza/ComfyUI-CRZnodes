@@ -322,6 +322,9 @@ app.registerExtension(
                 this.bgcolor = NODE_BACKGROUND_COLOR;
                 this.crzFloatSlider = new CRZFloatSlider(this);
                 
+                // Mark this as a CRZ node for connection hiding
+                this.isCRZNode = true;
+                
                 // DEBUG: Hook into the value reading process
                 const originalGetInputData = this.getInputData;
                 this.getInputData = function(slot) {

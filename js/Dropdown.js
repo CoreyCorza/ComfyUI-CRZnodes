@@ -35,6 +35,9 @@ app.registerExtension({
                 // Set background color like other CRZ nodes
                 this.bgcolor = NODE_BACKGROUND_COLOR;
                 
+                // Mark this as a CRZ node for connection hiding
+                this.isCRZNode = true;
+                
                 // Initialize properties like other CRZ nodes
                 this.properties = this.properties || {};
                 this.properties.label = this.properties.label || "Dropdown";

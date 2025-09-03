@@ -294,6 +294,9 @@ app.registerExtension(
                 if (onNodeCreated) onNodeCreated.apply(this, []);
                 this.bgcolor = NODE_BACKGROUND_COLOR;
                 this.crzIntegerSlider = new CRZIntegerSlider(this);
+                
+                // Mark this as a CRZ node for connection hiding
+                this.isCRZNode = true;
             }
         }
     }

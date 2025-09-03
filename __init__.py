@@ -12,6 +12,7 @@ from .dropdown import NODE_CLASS_MAPPINGS as DropdownMappings, NODE_DISPLAY_NAME
 from .image_selector import NODE_CLASS_MAPPINGS as ImageSelectorMappings, NODE_DISPLAY_NAME_MAPPINGS as ImageSelectorDisplayMappings
 from .passthrough import NODE_CLASS_MAPPINGS as PassthroughMappings, NODE_DISPLAY_NAME_MAPPINGS as PassthroughDisplayMappings
 from .switch import NODE_CLASS_MAPPINGS as SwitchMappings, NODE_DISPLAY_NAME_MAPPINGS as SwitchDisplayMappings
+from . import preferences
 
 
 

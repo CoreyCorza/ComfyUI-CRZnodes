@@ -35,6 +35,9 @@ app.registerExtension({
                 this.isPassthrough = true;
                 this.isHovered = false;
                 
+                // Load preferences
+                this.loadPreferences();
+                
                 // Help dynamic nodes find their final targets through the passthrough
                 this.getPassthroughTarget = function() {
                     // Find what this passthrough outputs to
@@ -169,6 +172,12 @@ app.registerExtension({
             nodeType.prototype.computeSize = function() {
                 return [80, 28];
             };
+            
+            // Load preferences for passthrough behavior
+            nodeType.prototype.loadPreferences = function() {
+                const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
+                this.alwaysShowConnections = prefs.always_show_passthrough === true;
+            };
         }
     },
     
@@ -201,6 +210,23 @@ app.registerExtension({
             }
         });
         // --- END: CRZ Passthrough global state and event listeners ---
+        
+        // Listen for preference changes
+        window.addEventListener("crz_preferences_changed", (e) => {
+            // Update all passthrough nodes when preferences change
+            if (LiteGraph && LiteGraph.LGraphCanvas && LiteGraph.LGraphCanvas.active_canvas) {
+                const graph = LiteGraph.LGraphCanvas.active_canvas.graph;
+                if (graph && graph._nodes_by_id) {
+                    Object.values(graph._nodes_by_id).forEach(node => {
+                        if (node.isPassthrough && node.loadPreferences) {
+                            node.loadPreferences();
+                        }
+                    });
+                }
+            }
+        });
+        
+        // Preferences are now handled by CRZPreferences.js
         
         // Helper function to check if a connection is part of a passthrough chain involving a specific node
         function isConnectionInPassthroughChain(link, selectedNode, graph) {
@@ -288,6 +314,25 @@ app.registerExtension({
             
             // --- BEGIN: CRZ Passthrough link visibility logic ---
             if (hasPassthroughOrigin || hasPassthroughTarget) {
+                // Check preferences
+                const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
+                const alwaysShow = prefs.always_show_passthrough === true;
+                const alwaysHideCRZ = prefs.always_hide_crz_connections === true;
+                
+                // If "always hide CRZ node connections" is enabled, hide all connections to/from CRZ nodes
+                if (alwaysHideCRZ) {
+                    const hasCRZOrigin = originNode.isCRZNode;
+                    const hasCRZTarget = targetNode.isCRZNode;
+                    if (hasCRZOrigin || hasCRZTarget) {
+                        return; // Hide the connection
+                    }
+                }
+                
+                // If always show is enabled, show all passthrough connections
+                if (alwaysShow) {
+                    return originalRenderLink.call(this, ctx, a, b, link, skip_border, flow, color, start_dir, end_dir, num_sublinks);
+                }
+                
                 // Show all passthrough links if Ctrl+hover is active
                 if (window.CRZ_passthrough_show_all_links) {
                     const originalAlpha = ctx.globalAlpha;
@@ -320,6 +365,18 @@ app.registerExtension({
                 return;
             }
             // --- END: CRZ Passthrough link visibility logic ---
+
+            // Check if "always hide CRZ node connections" is enabled for non-passthrough connections
+            const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
+            const alwaysHideCRZ = prefs.always_hide_crz_connections === true;
+            
+            if (alwaysHideCRZ) {
+                const hasCRZOrigin = originNode.isCRZNode;
+                const hasCRZTarget = targetNode.isCRZNode;
+                if (hasCRZOrigin || hasCRZTarget) {
+                    return; // Hide the connection
+                }
+            }
 
             // Otherwise render normally
             return originalRenderLink.call(this, ctx, a, b, link, skip_border, flow, color, start_dir, end_dir, num_sublinks);
