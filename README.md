@@ -1,3 +1,6 @@
+#Installation
+Just git clone like you normally would to custom nodes folder. There is no requirements.  
+
 # Dashboard Nodes
 - Boolean Toggle
 - Float Slider
