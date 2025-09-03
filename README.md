@@ -45,3 +45,9 @@ Dropdowns automatically inherit the list from whatever they were connected to.
 There may be cases where they don't - Let me know.
 ![brave_9tTWzrNDJL](https://github.com/user-attachments/assets/03418919-c909-42ea-a02d-83c39e25333c)
 
+# Preferences
+A `CRZ` button should be shown in the bottom left corner of the viewport.  
+You can also summon the preferences with ctrl+shift+c.  
+Not sure about this keyboard shortcut as some people might use that for other things. If its a problem let me know, might be able to work something else out.
+![brave_WKj9cKlQ85](https://github.com/user-attachments/assets/c10521d3-e0fc-4057-8581-d377ce737e52)
+
