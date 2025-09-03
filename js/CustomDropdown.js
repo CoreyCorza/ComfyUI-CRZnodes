@@ -15,7 +15,8 @@ import {
     INACTIVE_VALUE_COLOR,
     TRACK_COLOR,
     INACTIVE_TRACK_COLOR,
-    INACTIVE_HANDLE_COLOR
+    INACTIVE_HANDLE_COLOR,
+    DROPDOWN_BG_COLOR
 } from "./CRZConfig.js";
 
 // Layout constants
@@ -278,24 +279,24 @@ app.registerExtension({
                 ctx.fillText(name, LABEL_LEFT_PADDING, sliderY + 15);
                 
                 // Draw dropdown area
-                const dropdownWidth = TRACK_WIDTH + 45;
+                const dropdownWidth = TRACK_WIDTH + 50;
                 const dropdownLeft = this.size[0] - TRACK_RIGHT_PADDING;
                 const dropdownY = sliderY + TRACK_VERTICAL_OFFSET - 8;
                 const dropdownHeight = 16;
                 const cornerRadius = 3;
                 
                 // Draw rounded dropdown background
-                ctx.fillStyle = isActive ? "#2a2a2a" : "#2b2b2b";
+                ctx.fillStyle = isActive ? DROPDOWN_BG_COLOR : "#2b2b2b";
                 ctx.beginPath();
                 ctx.roundRect(dropdownLeft, dropdownY, dropdownWidth, dropdownHeight, cornerRadius);
                 ctx.fill();
                 
                 // Draw rounded dropdown border
-                ctx.strokeStyle = isActive ? "#555" : "#333";
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.roundRect(dropdownLeft, dropdownY, dropdownWidth, dropdownHeight, cornerRadius);
-                ctx.stroke();
+                // ctx.strokeStyle = isActive ? "#555" : "#333";
+                // ctx.lineWidth = 0;
+                // ctx.beginPath();
+                // ctx.roundRect(dropdownLeft, dropdownY, dropdownWidth, dropdownHeight, cornerRadius);
+                // ctx.stroke();
                 
                 // Draw current value (centered in dropdown)
                 ctx.fillStyle = valueColor;
