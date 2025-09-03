@@ -1,5 +1,5 @@
 # Installation  
-Just git clone like you normally do to custom nodes folder. 
+Git clone like you normally do to the custom nodes folder. 
 There are no requirements.  
 
 # Dashboard Nodes
