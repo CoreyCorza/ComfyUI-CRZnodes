@@ -21,7 +21,7 @@ All nodes can be found easily by searching for "crz"
 - Dashboard Node (experimental, see note down the bottom of page)  
 <img width="1537" height="762" alt="image" src="https://github.com/user-attachments/assets/059f2d37-cc4c-4405-8237-7fd4a6c486d6" />  
 
-.  
+#### Configuring
 To change the min/max range of the sliders, double click on the slider handle.  
 The description tells you what each value represents.  
 Here the min is 1, the max is set to 10, and the slider handle will step in increments of 1.  
