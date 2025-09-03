@@ -1,12 +1,12 @@
 // CRZ Global Stylesheet
-// This file contains all shared constants for consistent styling across CRZ nodes
+// Todo: Ugghh.. Actually use these across all nodes consistently
 
 // === NODE SIZING ===
 export const NODE_WIDTH = 250;
 export const NODE_HEIGHT_MULTIPLIER = 1.4;
 
 // === LAYOUT ===
-export const NODE_PADDING = 7;
+export const NODE_PADDING = 4;
 export const LABEL_LEFT_PADDING = 10;
 export const TRACK_LEFT_PADDING = 10;
 export const TRACK_RIGHT_PADDING = 140;
@@ -31,7 +31,7 @@ export const SLIDER_HEIGHT = 30;
 export const SLIDER_VERTICAL_OFFSET = 0;
 
 // === DASHBOARD SPECIFIC ===
-export const DASHBOARD_LINE_SPACING = 19;
+export const DASHBOARD_LINE_SPACING = 20;
 
 // === TOGGLE DIMENSIONS ===
 export const TOGGLE_WIDTH = 70;

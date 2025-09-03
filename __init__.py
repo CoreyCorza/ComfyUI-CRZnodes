@@ -7,7 +7,7 @@ from .float_slider import NODE_CLASS_MAPPINGS as FloatSliderMappings, NODE_DISPL
 from .integer_slider import NODE_CLASS_MAPPINGS as IntegerSliderMappings, NODE_DISPLAY_NAME_MAPPINGS as IntegerSliderDisplayMappings
 from .float_to_int import NODE_CLASS_MAPPINGS as FloatToIntMappings, NODE_DISPLAY_NAME_MAPPINGS as FloatToIntDisplayMappings
 from .int_to_float import NODE_CLASS_MAPPINGS as IntToFloatMappings, NODE_DISPLAY_NAME_MAPPINGS as IntToFloatDisplayMappings
-from .dashboard import NODE_CLASS_MAPPINGS as DashboardMappings, NODE_DISPLAY_NAME_MAPPINGS as DashboardDisplayMappings
+from .dashboard_node import NODE_CLASS_MAPPINGS as DashboardSingleMappings, NODE_DISPLAY_NAME_MAPPINGS as DashboardSingleDisplayMappings
 from .dropdown import NODE_CLASS_MAPPINGS as DropdownMappings, NODE_DISPLAY_NAME_MAPPINGS as DropdownDisplayMappings
 from .image_selector import NODE_CLASS_MAPPINGS as ImageSelectorMappings, NODE_DISPLAY_NAME_MAPPINGS as ImageSelectorDisplayMappings
 from .passthrough import NODE_CLASS_MAPPINGS as PassthroughMappings, NODE_DISPLAY_NAME_MAPPINGS as PassthroughDisplayMappings
@@ -22,7 +22,7 @@ NODE_CLASS_MAPPINGS.update(FloatSliderMappings)
 NODE_CLASS_MAPPINGS.update(IntegerSliderMappings)
 NODE_CLASS_MAPPINGS.update(FloatToIntMappings)
 NODE_CLASS_MAPPINGS.update(IntToFloatMappings)
-NODE_CLASS_MAPPINGS.update(DashboardMappings)
+NODE_CLASS_MAPPINGS.update(DashboardSingleMappings)
 NODE_CLASS_MAPPINGS.update(DropdownMappings)
 NODE_CLASS_MAPPINGS.update(ImageSelectorMappings)
 NODE_CLASS_MAPPINGS.update(PassthroughMappings)
@@ -36,7 +36,7 @@ NODE_DISPLAY_NAME_MAPPINGS.update(FloatSliderDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(IntegerSliderDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(FloatToIntDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(IntToFloatDisplayMappings)
-NODE_DISPLAY_NAME_MAPPINGS.update(DashboardDisplayMappings)
+NODE_DISPLAY_NAME_MAPPINGS.update(DashboardSingleDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(DropdownDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(ImageSelectorDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(PassthroughDisplayMappings)

@@ -198,10 +198,10 @@ app.registerExtension({
             btn.innerHTML = 'CRZ';
             btn.style.cssText = `
                 position: fixed;
-                bottom: 120px;
-                left: 80px;
+                bottom: 220px;
+                left: 14px;
                 z-index: 2147483647; /* max */
-                background: #3f3f3f5d;
+                background: rgba(166, 73, 219, 0.7);
                 color: white;
                 border: none;
                 padding: 6px;
@@ -211,13 +211,13 @@ app.registerExtension({
                 font-weight: bold;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.35);
                 pointer-events: auto;
-                opacity: 0.3;
+                opacity: 0.7;
                 transition: opacity 120ms ease-in-out;
             `;
             btn.title = 'CRZ Nodes Settings (Ctrl+Shift+C)';
             btn.onclick = () => showCRZPreferencesDialog();
             btn.addEventListener('mouseenter', () => { btn.style.opacity = '1'; });
-            btn.addEventListener('mouseleave', () => { btn.style.opacity = '0.3'; });
+            btn.addEventListener('mouseleave', () => { btn.style.opacity = '0.7'; });
             (document.body || document.documentElement).appendChild(btn);
         };
         const ensureCRZButtonState = () => {
