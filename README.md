@@ -14,6 +14,8 @@ Same with the float slider.
 Min max, step increments, and how many decimal places.  
 <img width="1152" height="401" alt="image" src="https://github.com/user-attachments/assets/c286569b-7973-46a0-86ec-5f2a82e77da4" />
 
+To give these nodes custom labels, just double click on the text
+<img width="1016" height="370" alt="image" src="https://github.com/user-attachments/assets/977c6554-e502-4547-a10e-d52ed125130b" />
 
 
 # Passthrough Node
