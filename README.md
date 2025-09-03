@@ -74,7 +74,7 @@ So I usually have node badges turned off, otherwise you end up with this
 
 # Experimental
 The dashboard node should just automatically detect what its connected to and change its type.  
-Meant to be any all-in-one replacement for the other individual dashboard nodes. But I dont want to break my old workflows just yet, and haven't tested it much.  
+Meant to be an all-in-one replacement for the other individual dashboard nodes. But I dont want to break my old workflows just yet, and haven't tested it much.  
 So it does its own thing for now.
 ![brave_B9bUJKXOM1](https://github.com/user-attachments/assets/efc795a0-95cc-4c6c-8ab9-87b79fe41a8c)
 
