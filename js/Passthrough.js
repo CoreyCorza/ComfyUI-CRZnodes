@@ -38,6 +38,32 @@ app.registerExtension({
                 // Load preferences
                 this.loadPreferences();
                 
+                // Double-click handler for title configuration
+                this.onDblClick = function(e, pos, canvas) {
+                    const currentTitle = this.title || "CRZ Passthrough";
+                    
+                    canvas.prompt(
+                        "Passthrough Title", 
+                        currentTitle === "CRZ Passthrough" ? "" : currentTitle,
+                        function(newTitle) {
+                            if (newTitle !== null) {
+                                if (newTitle.trim() === "") {
+                                    // Reset to default if empty
+                                    this.title = "CRZ Passthrough";
+                                } else {
+                                    this.title = newTitle.trim();
+                                }
+                                // Force redraw to show new title
+                                if (this.graph && this.graph.setDirtyCanvas) {
+                                    this.graph.setDirtyCanvas(true);
+                                }
+                            }
+                        }.bind(this),
+                        e
+                    );
+                    return true;
+                };
+                
                 // Help dynamic nodes find their final targets through the passthrough
                 this.getPassthroughTarget = function() {
                     // Find what this passthrough outputs to
