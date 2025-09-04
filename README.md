@@ -8,7 +8,7 @@ Or install via the comfyui manager using url    `https://github.com/CoreyCorza/C
 <img width="1886" height="1507" alt="image" src="https://github.com/user-attachments/assets/caa4594e-b65a-4ca1-8f98-5e903a97251a" />
 
 # Search
-All nodes can be found easily by searching for "crz"
+All nodes can be found easily by searching for `crz`
 <img width="1246" height="859" alt="image" src="https://github.com/user-attachments/assets/86f6e564-e624-4acf-a9d7-5e51c4a23738" />
 
 
