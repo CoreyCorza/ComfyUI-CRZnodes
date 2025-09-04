@@ -45,7 +45,7 @@ To give these nodes custom labels, double click on the text
 <img width="1016" height="370" alt="image" src="https://github.com/user-attachments/assets/977c6554-e502-4547-a10e-d52ed125130b" />
 
 #### Compare
-Comparison node for checking users input and switch data using the boolean result.  
+Comparison node for checking users input and switching data using the boolean result.  
 Double click the compare node to modify the comparison type.  
 ```
 > Is A greater than B?  
