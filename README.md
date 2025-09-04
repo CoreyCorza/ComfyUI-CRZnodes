@@ -9,7 +9,8 @@ Or install via the comfyui manager using url    `https://github.com/CoreyCorza/C
 
 # Search
 All nodes can be found easily by searching for "crz"
-<img width="1237" height="728" alt="image" src="https://github.com/user-attachments/assets/9ca8c9ab-ed4b-436b-a69b-179759cb573c" />
+<img width="1246" height="859" alt="image" src="https://github.com/user-attachments/assets/86f6e564-e624-4acf-a9d7-5e51c4a23738" />
+
 
 
 # Dashboard Nodes
