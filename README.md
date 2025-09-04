@@ -7,7 +7,7 @@ There are no requirements.
 Or install via comfyui extensions
 ![brave_TZvsdaSU01](https://github.com/user-attachments/assets/1ae0213d-ab3f-4d42-8f85-1c374d904695)
 
-Or comfyui manager
+Or install via comfyui manager
 <img width="1669" height="402" alt="image" src="https://github.com/user-attachments/assets/f4a08987-5966-483e-8d51-cc9894208dda" />
 
 
