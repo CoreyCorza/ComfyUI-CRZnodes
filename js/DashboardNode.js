@@ -323,9 +323,14 @@ class CRZDashboardNode {
             }
 
             vX = Math.max(0, Math.min(1, vX));
-            this.properties.slider_value = min + (max - min) * ((this.unlock) ? vX : vX);
+            this.properties.slider_value = min + (max - min) * vX;
 
-            // Round to specified decimal places or integer
+            // Apply step constraint first
+            if (step > 0) {
+                this.properties.slider_value = Math.round((this.properties.slider_value - min) / step) * step + min;
+            }
+
+            // Then apply type-specific rounding
             const sliderType = this.properties.slider_type || "FLOAT";
             if (sliderType === "INT") {
                 this.properties.slider_value = Math.round(this.properties.slider_value);
@@ -712,13 +717,14 @@ app.registerExtension({
                     // SLIDER DRAWING (INT/FLOAT)
                     const normalizedValue = Math.max(0, Math.min(1, (value - min) / (max - min)));
                     
-                    // Draw value on the right
+                    // Draw value on the right (matching FloatSlider positioning)
                     ctx.fillStyle = valueColor;
-                    ctx.textAlign = "right";
+                    ctx.font = LiteGraph.NODE_SUBTEXT_SIZE + "px Arial";
+                    ctx.textAlign = "center";
                     const displayValue = type === "INT" ? 
                         Math.round(value).toString() : 
                         parseFloat(value).toFixed(decimals);
-                    ctx.fillText(displayValue, this.size[0] - VALUE_RIGHT_PADDING, sliderY + 15);
+                    ctx.fillText(displayValue, this.size[0] - VALUE_RIGHT_SHIFT + VALUE_RIGHT_OFFSET, sliderY + 15);
                     
                     // Draw slider track (same as Dashboard Multi)
                     ctx.fillStyle = trackColor;
@@ -851,7 +857,15 @@ app.registerExtension({
                                                 this.properties.slider_max = max;
                                                 this.properties.slider_step = step;
                                                 this.properties.slider_decimals = decimals;
+                                                
+                                                // Force property validation
+                                                this.configured = true;
                                                 this.onPropertyChanged("slider_min");
+                                                
+                                                // Force canvas redraw
+                                                if (this.graph && this.graph.setDirtyCanvas) {
+                                                    this.graph.setDirtyCanvas(true);
+                                                }
                                             }
                                         }
                                     }
@@ -881,7 +895,15 @@ app.registerExtension({
                                                 this.properties.slider_min = min;
                                                 this.properties.slider_max = max;
                                                 this.properties.slider_step = step;
+                                                
+                                                // Force property validation
+                                                this.configured = true;
                                                 this.onPropertyChanged("slider_min");
+                                                
+                                                // Force canvas redraw
+                                                if (this.graph && this.graph.setDirtyCanvas) {
+                                                    this.graph.setDirtyCanvas(true);
+                                                }
                                             }
                                         }
                                     }

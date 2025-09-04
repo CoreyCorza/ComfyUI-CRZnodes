@@ -2,7 +2,7 @@
 // Todo: Ugghh.. Actually use these across all nodes consistently
 
 // === NODE SIZING ===
-export const NODE_WIDTH = 250;
+export const NODE_WIDTH = 300;
 export const NODE_HEIGHT_MULTIPLIER = 1.4;
 
 // === LAYOUT ===
