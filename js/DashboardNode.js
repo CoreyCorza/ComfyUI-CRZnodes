@@ -38,7 +38,8 @@ import {
     HANDLE_COLOR,
     HANDLE_BORDER_ACTIVE,
     HANDLE_BORDER_INACTIVE,
-    DROPDOWN_BG_COLOR
+    DROPDOWN_BG_COLOR,
+    DROPDOWN_BG_COLOR_INACTIVE
 } from "./CRZConfig.js";
 
 // Layout constants
@@ -642,7 +643,7 @@ app.registerExtension({
                     const cornerRadius = 3;
                     
                     // Draw rounded dropdown background (matching Dropdown.js)
-                    ctx.fillStyle = isActive ? DROPDOWN_BG_COLOR : "#2b2b2b";
+                    ctx.fillStyle = isActive ? DROPDOWN_BG_COLOR : DROPDOWN_BG_COLOR_INACTIVE;
                     ctx.beginPath();
                     ctx.roundRect(dropdownLeft, dropdownY, dropdownWidth, dropdownHeight, cornerRadius);
                     ctx.fill();

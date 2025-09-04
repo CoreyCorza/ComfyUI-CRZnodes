@@ -59,6 +59,7 @@ export const HANDLE_BORDER_INACTIVE = "rgba(77, 77, 77, 0)";
 
 // === DROPDOWN COLORS ===
 export const DROPDOWN_BG_COLOR = "rgba(20,20,20,0.5)";
+export const DROPDOWN_BG_COLOR_INACTIVE = "rgba(20,20,20,0.1)";
 export const DROPDOWN_BORDER_COLOR = LiteGraph.NODE_DEFAULT_BGCOLOR;
 export const VALUE_TEXT_COLOR = LiteGraph.NODE_TEXT_COLOR;
 

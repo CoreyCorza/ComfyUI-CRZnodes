@@ -9,7 +9,11 @@ import {
     COMBO_TEXT_OFFSET,
     NODE_BACKGROUND_COLOR,
     LABEL_COLOR,
+    INACTIVE_LABEL_COLOR,
+    VALUE_COLOR,
+    INACTIVE_VALUE_COLOR,
     DROPDOWN_BG_COLOR,
+    DROPDOWN_BG_COLOR_INACTIVE,
     DROPDOWN_BORDER_COLOR,
     VALUE_TEXT_COLOR
 } from "./CRZConfig.js";
@@ -227,9 +231,19 @@ app.registerExtension({
                 const fontsize = LiteGraph.NODE_SUBTEXT_SIZE;
                 const shX = (this.slot_start_y || 0) + fontsize * 1.5;
                 
+                // Check if this dropdown should be active (not greyed out)
+                const isConnected = this.outputs && this.outputs[0] && 
+                                   this.outputs[0].links && this.outputs[0].links.length > 0;
+                const hasCustomName = (this.properties.label || "Dropdown") !== "Dropdown";
+                const isActive = isConnected || hasCustomName;
+                
+                // Choose colors based on active status
+                const labelColor = isActive ? LABEL_COLOR : INACTIVE_LABEL_COLOR;
+                const valueColor = isActive ? VALUE_COLOR : INACTIVE_VALUE_COLOR;
+                
                 // Draw the label like other CRZ nodes
                 ctx.save();
-                ctx.fillStyle = LABEL_COLOR;
+                ctx.fillStyle = labelColor;
                 ctx.font = fontsize + "px Arial";
                 ctx.textAlign = "left";
                 ctx.fillText(this.properties.label || "Dropdown", LABEL_LEFT_PADDING, shX);
@@ -241,20 +255,20 @@ app.registerExtension({
                 const cornerRadius = 3;
                 
                 // Draw rounded dropdown background
-                ctx.fillStyle = DROPDOWN_BG_COLOR;
+                ctx.fillStyle = isActive ? DROPDOWN_BG_COLOR : DROPDOWN_BG_COLOR_INACTIVE;
                 ctx.beginPath();
                 ctx.roundRect(dropdownLeft, dropdownY - 2, DROPDOWN_WIDTH, dropdownHeight, cornerRadius);
                 ctx.fill();
                 
                 // Draw rounded dropdown border
-                ctx.strokeStyle = DROPDOWN_BORDER_COLOR;
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.roundRect(dropdownLeft, dropdownY - 2, DROPDOWN_WIDTH, dropdownHeight, cornerRadius);
-                ctx.stroke();
+                // ctx.strokeStyle = DROPDOWN_BORDER_COLOR;
+                // ctx.lineWidth = 1;
+                // ctx.beginPath();
+                // ctx.roundRect(dropdownLeft, dropdownY - 2, DROPDOWN_WIDTH, dropdownHeight, cornerRadius);
+                // ctx.stroke();
                 
                 // Draw current value
-                ctx.fillStyle = VALUE_TEXT_COLOR;
+                ctx.fillStyle = valueColor;
                 ctx.font = fontsize + "px Arial";
                 ctx.textAlign = "center";
                 const displayValue = this.properties.value || "";
