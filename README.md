@@ -4,8 +4,9 @@ git clone like you normally do to the `custom_nodes` folder:
 
 There are no requirements.  
 
-Or install via the comfyui manager using url    `https://github.com/CoreyCorza/ComfyUI-CRZnodes.git`
-<img width="1886" height="1507" alt="image" src="https://github.com/user-attachments/assets/caa4594e-b65a-4ca1-8f98-5e903a97251a" />
+Or install via comfyui extensions
+![brave_qlBHbqDDmT](https://github.com/user-attachments/assets/556ec67d-98b4-4f7f-92e9-fac7fd755819)
+
 
 # Search
 All nodes can be found easily by searching for `crz`
