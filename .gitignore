@@ -101,4 +101,3 @@ dmypy.json
 
 # ComfyUI Registry files
 nodes.zip
-pyproject.toml

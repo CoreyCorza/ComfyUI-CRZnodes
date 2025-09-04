@@ -1,0 +1,15 @@
+[project]
+name = "CRZnodes"
+description = "Dashboard Nodes for Comfy"
+version = "1.0.1"
+license = { file = "LICENSE" }
+
+[project.urls]
+Repository = "https://github.com/CoreyCorza/ComfyUI-CRZnodes"
+Documentation = "https://github.com/CoreyCorza/ComfyUI-CRZnodes/wiki"
+"Bug Tracker" = "https://github.com/CoreyCorza/ComfyUI-CRZnodes/issues"
+
+[tool.comfy]
+PublisherId = "crz"
+DisplayName = "ComfyUI-CRZnodes"
+Icon = ""
