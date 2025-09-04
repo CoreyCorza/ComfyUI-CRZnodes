@@ -103,3 +103,12 @@ Meant to be an all-in-one replacement for the other individual dashboard nodes. 
 So it does its own thing for now.
 ![brave_B9bUJKXOM1](https://github.com/user-attachments/assets/efc795a0-95cc-4c6c-8ab9-87b79fe41a8c)
 
+# Credit
+Inspired by everyone. Credit to everyone
+https://github.com/comfyanonymous/ComfyUI
+https://github.com/Smirnov75/ComfyUI-mxToolkit
+https://github.com/chrisgoringe/cg-use-everywhere
+https://github.com/rgthree/rgthree-comfy
+..and others I cant think of right now
+
+
