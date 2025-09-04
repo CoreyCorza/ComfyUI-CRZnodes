@@ -67,9 +67,9 @@ Hover over a passthrough node to see connections.
 Hold CTRL while hovering over a passthrough node to see all connections for all passthrough nodes  
 ![brave_2oqCzWCjcw](https://github.com/user-attachments/assets/f410ca6c-0ac9-4b67-bcf2-5268b3b7b998)
 
-Passthrough nodes will show text above them if you change their titles.  
-Right-click on passthrough node > Properties Panel > Edit the title
-<img width="1253" height="670" alt="image" src="https://github.com/user-attachments/assets/2b2cacfe-8f25-45de-8114-dfece7c7ec4c" />
+Double click on passthrough nodes to give them a title
+![brave_BvbHJuIC8K](https://github.com/user-attachments/assets/c1b58328-eb94-4663-ad06-d49367da0cf2)
+
 
 # Dropdowns
 Dropdowns automatically inherit the list from whatever they were connected to.   
