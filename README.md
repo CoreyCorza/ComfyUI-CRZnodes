@@ -25,7 +25,8 @@ All nodes can be found easily by searching for "crz"
 - Dashboard Node (experimental, see note down the bottom of page)
 - Compact int-to-float / float-to-int
 - Passthrough 
-<img width="1116" height="1154" alt="image" src="https://github.com/user-attachments/assets/66fee248-24c4-4ed6-9a61-5b5c29fa05ee" />
+<img width="1173" height="1139" alt="image" src="https://github.com/user-attachments/assets/ae527f6e-a4c1-4b36-a65b-ebd4c437288b" />
+
 
 
 #### Configuring
