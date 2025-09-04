@@ -18,6 +18,7 @@ All nodes can be found easily by searching for "crz"
 - Integer Slider
 - Dropdown
 - Custom Dropdown (user defined)
+- Compare
 - Switch
 - Image Selector 
 - Dashboard Node (experimental, see note down the bottom of page)
