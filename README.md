@@ -47,11 +47,13 @@ To give these nodes custom labels, double click on the text
 #### Compare
 Comparison node for checking users input and switch data using the boolean result.  
 Double click the compare node to modify the comparison type.  
+```
 > Is A greater than B?  
 < Is A less than B?  
 >= Is A equal to or greater than B?  
 <= Is A equal to or less than B?  
-= Does A equal B?  
+= Does A equal B?
+```
 ![brave_Iy6iNYmtfn](https://github.com/user-attachments/assets/aa78d3bf-cdf5-49bd-a9dc-419a3c5b3b62)
 ![brave_rz94tRuHMj](https://github.com/user-attachments/assets/61eb463d-b097-4bae-931e-376092ce6336)
 
