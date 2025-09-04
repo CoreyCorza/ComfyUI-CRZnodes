@@ -98,3 +98,7 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# ComfyUI Registry files
+nodes.zip
+pyproject.toml
