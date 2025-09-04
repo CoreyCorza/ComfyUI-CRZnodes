@@ -79,6 +79,7 @@ There may be cases where they don't - Let me know.
 
 # Preferences
 **By default, link visibility may be off for dashboard nodes. You can turn them on here**  
+
 A `CRZ` button should be shown in the bottom left corner of the viewport.  
 You can also summon the preferences with ctrl+shift+c.  
 Not sure about this keyboard shortcut as some people might use that for other things. If its a problem let me know.
