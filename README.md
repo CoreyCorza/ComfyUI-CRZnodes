@@ -5,7 +5,8 @@ git clone like you normally do to the `custom_nodes` folder:
 There are no requirements.  
 
 Or install via comfyui extensions
-![brave_qlBHbqDDmT](https://github.com/user-attachments/assets/556ec67d-98b4-4f7f-92e9-fac7fd755819)
+![brave_TZvsdaSU01](https://github.com/user-attachments/assets/1ae0213d-ab3f-4d42-8f85-1c374d904695)
+
 
 
 # Search
