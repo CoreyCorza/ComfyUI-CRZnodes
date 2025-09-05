@@ -1,7 +1,7 @@
 [project]
 name = "CRZnodes"
 description = "Dashboard Nodes for Comfy"
-version = "1.1.0"
+version = "1.1.1"
 license = { file = "LICENSE" }
 
 [project.urls]
