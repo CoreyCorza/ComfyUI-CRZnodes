@@ -1,10 +1,3 @@
-# Noteable Changes  
-Ive updated the switch node: `true` socket on top and `false` socket on bottom for UI/UX consistency.  
-Other nodes will follow this pattern going forward.  
-- Change made 5th Sept 2025  
-![brave_xHY0J9xPY9](https://github.com/user-attachments/assets/d5e76249-0b28-4bec-81cb-8e899f84bc14)
-
-
 # Installation  
 git clone like you normally do to the `custom_nodes` folder:  
 `git clone https://github.com/CoreyCorza/ComfyUI-CRZnodes.git`  
