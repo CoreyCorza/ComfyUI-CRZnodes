@@ -68,7 +68,7 @@ Double click the compare node to modify the comparison type.
 ![brave_rz94tRuHMj](https://github.com/user-attachments/assets/61eb463d-b097-4bae-931e-376092ce6336)
 
 #### Execute Switch
-Switch between running two different things depending on a bool condition.
+Handy for switching between two different execution chains based on a bool condition.
 ![brave_DoEsXsHDE0](https://github.com/user-attachments/assets/d1ec6471-6c30-4711-be22-d12a0493f4f7)
 
 
