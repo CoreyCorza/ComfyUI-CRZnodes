@@ -67,10 +67,17 @@ Double click the compare node to modify the comparison type.
 ![brave_Iy6iNYmtfn](https://github.com/user-attachments/assets/aa78d3bf-cdf5-49bd-a9dc-419a3c5b3b62)
 ![brave_rz94tRuHMj](https://github.com/user-attachments/assets/61eb463d-b097-4bae-931e-376092ce6336)
 
-#### Execute Switch
-Handy for switching between two different execution chains based on a bool condition.
-![brave_DoEsXsHDE0](https://github.com/user-attachments/assets/d1ec6471-6c30-4711-be22-d12a0493f4f7)
+#### Switch
+Switches input data
+![brave_JdJfFl2gK1](https://github.com/user-attachments/assets/2eeab7a4-e4ac-4e2a-b3ab-63c223ddda8d)
 
+#### Execute Switch
+Only runs downstream nodes of the active socket
+![brave_qn8I8NEnjL](https://github.com/user-attachments/assets/f63c2560-abbe-4145-8be6-0906c6e62a3e)
+
+#### Execute Block
+Blocks downstream nodes from running
+![brave_LIs0vyfoe6](https://github.com/user-attachments/assets/6fcbbe82-e032-4dd8-9270-b13becc32ef9)
 
 # Passthrough Node
 The passthrough node is basically just a reroute but hides connections.   
