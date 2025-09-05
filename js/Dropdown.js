@@ -103,7 +103,14 @@ app.registerExtension({
                 this.onMouseLeave = function(e) {
                     this.showTooltip = false;
                     if (this.tooltipElement) {
-                        this.tooltipElement.style.display = 'none';
+                        // Trigger fade out
+                        this.tooltipElement.style.opacity = '0';
+                        // Hide after transition completes
+                        setTimeout(() => {
+                            if (this.tooltipElement) {
+                                this.tooltipElement.style.display = 'none';
+                            }
+                        }, 200);
                     }
                     return false;
                 };
@@ -337,39 +344,51 @@ app.registerExtension({
                             z-index: 10000;
                             border: 1px solid rgba(41, 41, 41, 0.9);
                             white-space: nowrap;
+                            opacity: 0;
+                            transition: opacity 0.2s ease-in-out;
                         `;
                         document.body.appendChild(this.tooltipElement);
                     }
                     
-                    // Position tooltip above dropdown - try multiple canvas detection methods
-                    let canvas = null;
-                    if (this.graph && this.graph.canvas) {
-                        canvas = this.graph.canvas.canvas || this.graph.canvas;
+                    // Only update if tooltip text changed or not visible
+                    if (this.tooltipElement.textContent !== this.tooltipText || this.tooltipElement.style.opacity === '0') {
+                        // Get screen coordinates from the stored mouse event
+                        let screenX = 0;
+                        let screenY = 0;
+                        
+                        if (this.lastMouseEvent) {
+                            // Try to get client coordinates from the original event
+                            const originalEvent = this.lastMouseEvent.originalEvent || this.lastMouseEvent;
+                            screenX = originalEvent.clientX || 0;
+                            screenY = originalEvent.clientY || 0;
+                        }
+                        
+                        this.tooltipElement.textContent = this.tooltipText;
+                        this.tooltipElement.style.display = 'block';
+                        // Position off-screen first to calculate width
+                        this.tooltipElement.style.left = '-9999px';
+                        this.tooltipElement.style.top = '-9999px';
+                        this.tooltipElement.style.opacity = '0';
+                        
+                        // Position correctly after width is calculated
+                        requestAnimationFrame(() => {
+                            this.tooltipElement.style.left = (screenX - this.tooltipElement.offsetWidth/2) + 'px';
+                            this.tooltipElement.style.top = (screenY - 60) + 'px';
+                            // Then fade in
+                            requestAnimationFrame(() => {
+                                this.tooltipElement.style.opacity = '1';
+                            });
+                        });
                     }
-                    if (!canvas && this.graph && this.graph.constructor && this.graph.constructor.canvas) {
-                        canvas = this.graph.constructor.canvas;
-                    }
-                    if (!canvas && app && app.canvas) {
-                        canvas = app.canvas.canvas || app.canvas;
-                    }
-                    
-                    // Get screen coordinates from the stored mouse event
-                    let screenX = 0;
-                    let screenY = 0;
-                    
-                    if (this.lastMouseEvent) {
-                        // Try to get client coordinates from the original event
-                        const originalEvent = this.lastMouseEvent.originalEvent || this.lastMouseEvent;
-                        screenX = originalEvent.clientX || 0;
-                        screenY = originalEvent.clientY || 0;
-                    }
-                    
-                    this.tooltipElement.textContent = this.tooltipText;
-                    this.tooltipElement.style.left = (screenX - this.tooltipElement.offsetWidth/2) + 'px';
-                    this.tooltipElement.style.top = (screenY - 60) + 'px';
-                    this.tooltipElement.style.display = 'block';
-                } else if (this.tooltipElement) {
-                    this.tooltipElement.style.display = 'none';
+                } else if (this.tooltipElement && this.tooltipElement.style.opacity !== '0') {
+                    // Trigger fade out
+                    this.tooltipElement.style.opacity = '0';
+                    // Hide after transition completes
+                    setTimeout(() => {
+                        if (this.tooltipElement) {
+                            this.tooltipElement.style.display = 'none';
+                        }
+                    }, 200);
                 }
                 
                 ctx.restore();
