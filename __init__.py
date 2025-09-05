@@ -15,6 +15,8 @@ from .passthrough import NODE_CLASS_MAPPINGS as PassthroughMappings, NODE_DISPLA
 from .switch import NODE_CLASS_MAPPINGS as SwitchMappings, NODE_DISPLAY_NAME_MAPPINGS as SwitchDisplayMappings
 from .compare import NODE_CLASS_MAPPINGS as CompareMappings, NODE_DISPLAY_NAME_MAPPINGS as CompareDisplayMappings
 from .label import NODE_CLASS_MAPPINGS as LabelMappings, NODE_DISPLAY_NAME_MAPPINGS as LabelDisplayMappings
+from .execute_switch import NODE_CLASS_MAPPINGS as ExecuteSwitchMappings, NODE_DISPLAY_NAME_MAPPINGS as ExecuteSwitchDisplayMappings
+from .execute_block import NODE_CLASS_MAPPINGS as ExecuteBlockMappings, NODE_DISPLAY_NAME_MAPPINGS as ExecuteBlockDisplayMappings
 from . import preferences
 
 
@@ -33,6 +35,8 @@ NODE_CLASS_MAPPINGS.update(PassthroughMappings)
 NODE_CLASS_MAPPINGS.update(SwitchMappings)
 NODE_CLASS_MAPPINGS.update(CompareMappings)
 NODE_CLASS_MAPPINGS.update(LabelMappings)
+NODE_CLASS_MAPPINGS.update(ExecuteSwitchMappings)
+NODE_CLASS_MAPPINGS.update(ExecuteBlockMappings)
 
 
 
@@ -50,6 +54,8 @@ NODE_DISPLAY_NAME_MAPPINGS.update(PassthroughDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(SwitchDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(CompareDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(LabelDisplayMappings)
+NODE_DISPLAY_NAME_MAPPINGS.update(ExecuteSwitchDisplayMappings)
+NODE_DISPLAY_NAME_MAPPINGS.update(ExecuteBlockDisplayMappings)
 
 
 
