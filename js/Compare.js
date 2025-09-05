@@ -170,14 +170,6 @@ app.registerExtension({
                 const labelColor = isActive ? LABEL_COLOR : INACTIVE_LABEL_COLOR;
                 const valueColor = isActive ? VALUE_COLOR : INACTIVE_VALUE_COLOR;
                 
-                // Draw "Compare" label at the top
-                // ctx.fillStyle = labelColor;
-                // ctx.font = "12px Arial";
-                // ctx.textAlign = "center";
-                // ctx.fillText("A == B", this.size[0] / 2, 18);
-                
-                // Comparison operator text removed - toggle is self-explanatory
-                
                 // Draw result indicator (boolean toggle-style)
                 const toggleWidth = 30;
                 const toggleHeight = TOGGLE_HEIGHT;
@@ -263,7 +255,17 @@ app.registerExtension({
                 ctx.roundRect(handleX, handleY, HANDLE_SIZE, HANDLE_SIZE, HANDLE_CORNER_RADIUS);
                 ctx.fill();
                 
-                // Result text removed - toggle visual is sufficient
+                // Draw the operator text
+                const operator = this.properties.operator || "=";
+                ctx.fillStyle = labelColor;
+                ctx.font = "12px Arial";
+                ctx.textAlign = "center";
+                // ctx.textBaseline = "middle";
+                
+                // Position the operator text above the toggle
+                const textX = this.size[0] / 2+7;
+                const textY = this.size[1] / 2 +4;
+                ctx.fillText(operator, textX, textY);
             };
         }
     }
