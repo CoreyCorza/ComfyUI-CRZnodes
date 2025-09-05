@@ -39,6 +39,35 @@ app.registerExtension({
                 // Mark as CRZ node for connection hiding
                 this.isCRZNode = true;
                 
+                // Add property change listener to force redraws when values change
+                this.onPropertyChanged = function(name, value, prev_value) {
+                    if (this.graph && this.graph.setDirtyCanvas) {
+                        this.graph.setDirtyCanvas(true);
+                    }
+                };
+                
+                // Add connection change listener to monitor input changes
+                this.onConnectionsChange = function(type, slotIndex, isConnected, linkInfo, ioSlot) {
+                    if (this.graph && this.graph.setDirtyCanvas) {
+                        this.graph.setDirtyCanvas(true);
+                    }
+                };
+                
+                // Force continuous updates when boolean input is connected
+                this._updateInterval = setInterval(() => {
+                    const boolConnected = this.inputs && this.inputs.length >= 3 && this.inputs[2] && this.inputs[2].link !== null;
+                    if (boolConnected && this.graph && this.graph.setDirtyCanvas) {
+                        this.graph.setDirtyCanvas(true);
+                    }
+                }, 100); // Update every 100ms when connected
+                
+                // Cleanup interval when node is removed
+                this.onRemoved = function() {
+                    if (this._updateInterval) {
+                        clearInterval(this._updateInterval);
+                    }
+                };
+                
                 // Set input labels for clarity - match Python parameter names
                 this.onAdded = function() {
                     if (this.inputs && this.inputs.length >= 2) {
@@ -87,13 +116,75 @@ app.registerExtension({
                 const boolConnected = this.inputs && this.inputs.length >= 3 && this.inputs[2] && this.inputs[2].link !== null;
                 
                 if (boolConnected) {
-                    // If connected, get from connected source (like ExecuteSwitch)
+                    // If connected, get from connected source
                     try {
                         const boolLink = this.graph.links[this.inputs[2].link];
                         if (boolLink) {
                             const sourceNode = this.graph.getNodeById(boolLink.origin_id);
-                            if (sourceNode && sourceNode.widgets && sourceNode.widgets.length > 0) {
-                                switchValue = !!sourceNode.widgets[0].value;
+                            if (sourceNode) {
+                                // For Compare nodes, try to calculate the comparison result directly
+                                if (sourceNode.type === "CRZCompare" || (sourceNode.title && sourceNode.title.includes("Compare"))) {
+                                    // Get Compare node's inputs
+                                    const inputA = sourceNode.inputs?.[0];
+                                    const inputB = sourceNode.inputs?.[1];
+                                    
+                                    if (inputA && inputB && inputA.link != null && inputB.link != null) {
+                                        try {
+                                            const aLink = sourceNode.graph.links[inputA.link];
+                                            const bLink = sourceNode.graph.links[inputB.link];
+                                            
+                                            if (aLink && bLink) {
+                                                const aNode = sourceNode.graph.getNodeById(aLink.origin_id);
+                                                const bNode = sourceNode.graph.getNodeById(bLink.origin_id);
+                                                
+                                                let aValue = null;
+                                                let bValue = null;
+                                                
+                                                if (aNode && aNode.widgets && aNode.widgets.length > 0) {
+                                                    aValue = aNode.widgets[0].value;
+                                                }
+                                                if (bNode && bNode.widgets && bNode.widgets.length > 0) {
+                                                    bValue = bNode.widgets[0].value;
+                                                }
+                                                
+                                                if (aValue !== null && bValue !== null) {
+                                                    const operator = sourceNode.properties?.operator || "=";
+                                                    switch (operator) {
+                                                        case ">":
+                                                            switchValue = (Number(aValue) > Number(bValue));
+                                                            break;
+                                                        case "<":
+                                                            switchValue = (Number(aValue) < Number(bValue));
+                                                            break;
+                                                        case ">=":
+                                                            switchValue = (Number(aValue) >= Number(bValue));
+                                                            break;
+                                                        case "<=":
+                                                            switchValue = (Number(aValue) <= Number(bValue));
+                                                            break;
+                                                        case "=":
+                                                        default:
+                                                            switchValue = (aValue == bValue);
+                                                            break;
+                                                    }
+                                                } else {
+                                                    switchValue = false;
+                                                }
+                                            }
+                                        } catch (e) {
+                                            switchValue = false;
+                                        }
+                                    } else {
+                                        switchValue = false;
+                                    }
+                                } else {
+                                    // For other node types, try to get widget value
+                                    if (sourceNode.widgets && sourceNode.widgets.length > 0) {
+                                        switchValue = !!sourceNode.widgets[0].value;
+                                    } else {
+                                        switchValue = false;
+                                    }
+                                }
                             }
                         }
                     } catch (e) {
@@ -163,6 +254,19 @@ app.registerExtension({
                     
                     ctx.bezierCurveTo(cp1X, inputY, cp2X, outputY, endX, outputY);
                     ctx.stroke();
+                }
+                
+                // Track value changes to force redraws
+                if (this._lastSwitchValue !== switchValue) {
+                    this._lastSwitchValue = switchValue;
+                    // Force a redraw on next frame
+                    if (this.graph && this.graph.setDirtyCanvas) {
+                        requestAnimationFrame(() => {
+                            if (this.graph && this.graph.setDirtyCanvas) {
+                                this.graph.setDirtyCanvas(true);
+                            }
+                        });
+                    }
                 }
             };
 
