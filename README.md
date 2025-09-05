@@ -29,7 +29,9 @@ All nodes can be found easily by searching for `crz`
 - Image Selector 
 - Dashboard Node (experimental, see note down the bottom of page)
 - Compact int-to-float / float-to-int
-- Passthrough 
+- Passthrough
+- Execute Block
+- Execute Switch
 <img width="1173" height="1139" alt="image" src="https://github.com/user-attachments/assets/ae527f6e-a4c1-4b36-a65b-ebd4c437288b" />
 
 
@@ -65,6 +67,9 @@ Double click the compare node to modify the comparison type.
 ![brave_Iy6iNYmtfn](https://github.com/user-attachments/assets/aa78d3bf-cdf5-49bd-a9dc-419a3c5b3b62)
 ![brave_rz94tRuHMj](https://github.com/user-attachments/assets/61eb463d-b097-4bae-931e-376092ce6336)
 
+#### Execute Switch
+Switch between running two different things depending on a bool condition.
+![brave_DoEsXsHDE0](https://github.com/user-attachments/assets/d1ec6471-6c30-4711-be22-d12a0493f4f7)
 
 
 # Passthrough Node
