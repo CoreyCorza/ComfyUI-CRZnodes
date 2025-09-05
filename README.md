@@ -114,6 +114,7 @@ https://github.com/comfyanonymous/ComfyUI
 https://github.com/Smirnov75/ComfyUI-mxToolkit  
 https://github.com/chrisgoringe/cg-use-everywhere  
 https://github.com/rgthree/rgthree-comfy  
+https://github.com/yolain/ComfyUI-Easy-Use
 ..and others I cant think of right now  
 
 
