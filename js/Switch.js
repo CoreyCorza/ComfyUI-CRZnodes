@@ -40,9 +40,9 @@ app.registerExtension({
                 this.onAdded = function() {
                     if (this.inputs && this.inputs.length >= 2) {
                         // Should only have 2 data inputs now
-                        this.inputs[0].name = "false_input";
+                        this.inputs[0].name = "true_input";
                         this.inputs[0].localized_name = " ";
-                        this.inputs[1].name = "true_input"; 
+                        this.inputs[1].name = "false_input"; 
                         this.inputs[1].localized_name = " ";
                     }
                     // Hide output socket label
@@ -58,9 +58,9 @@ app.registerExtension({
                         originalOnConfigure.call(this, info);
                     }
                     if (this.inputs && this.inputs.length >= 2) {
-                        this.inputs[0].name = "false_input";
+                        this.inputs[0].name = "true_input";
                         this.inputs[0].localized_name = " ";
-                        this.inputs[1].name = "true_input";
+                        this.inputs[1].name = "false_input";
                         this.inputs[1].localized_name = " ";
                     }
                     if (this.outputs && this.outputs[0]) {
@@ -114,27 +114,52 @@ app.registerExtension({
                     this.inputs[1].color_off = !switchValue ? "#95fd80" : "rgba(90, 90, 90, 1)";
                 }
                 
-                // Draw input labels with dynamic colors
-                if (this.inputs && this.inputs.length >= 2) {
-                    // True input label (first socket)
-                    const trueActive = switchValue;
-                    const trueLabelColor = trueActive ? "#CCCCCC" : "#585858";
-                    const trueLabelX = 18;
-                    const trueLabelY = LiteGraph.NODE_SLOT_HEIGHT * 0.5 + 9;
+                // // Draw input labels with dynamic colors
+                // if (this.inputs && this.inputs.length >= 2) {
+                //     // True input label (first socket)
+                //     const trueActive = switchValue;
+                //     const trueLabelColor = trueActive ? "#CCCCCC" : "#585858";
+                //     const trueLabelX = 18;
+                //     const trueLabelY = LiteGraph.NODE_SLOT_HEIGHT * 0.5 + 9;
                     
-                    ctx.fillStyle = trueLabelColor;
-                    ctx.font = "12px Arial";
-                    ctx.textAlign = "left";
-                    ctx.fillText("True", trueLabelX, trueLabelY);
+                //     ctx.fillStyle = trueLabelColor;
+                //     ctx.font = "12px Arial";
+                //     ctx.textAlign = "left";
+                //     ctx.fillText("True", trueLabelX, trueLabelY);
                     
-                    // False input label (second socket)
-                    const falseActive = !switchValue;
-                    const falseLabelColor = falseActive ? "#CCCCCC" : "#585858";
-                    const falseLabelX = 18;
-                    const falseLabelY = LiteGraph.NODE_SLOT_HEIGHT * 1.5 + 9;
+                //     // False input label (second socket)
+                //     const falseActive = !switchValue;
+                //     const falseLabelColor = falseActive ? "#CCCCCC" : "#585858";
+                //     const falseLabelX = 18;
+                //     const falseLabelY = LiteGraph.NODE_SLOT_HEIGHT * 1.5 + 9;
                     
-                    ctx.fillStyle = falseLabelColor;
-                    ctx.fillText("False", falseLabelX, falseLabelY);
+                //     ctx.fillStyle = falseLabelColor;
+                //     ctx.fillText("False", falseLabelX, falseLabelY);
+                // }
+                
+                // Draw S-curve connection from active input to output
+                if (this.inputs && this.inputs.length >= 2 && this.outputs && this.outputs[0]) {
+                    const activeInputIndex = switchValue ? 0 : 1; // True=0, False=1
+                    
+                    // Calculate positions
+                    const inputY = LiteGraph.NODE_SLOT_HEIGHT * (activeInputIndex + 0.5) +4;
+                    const outputY = LiteGraph.NODE_SLOT_HEIGHT * 0.5 +4;
+                    const startX = 8;
+                    const endX = this.size[0] -8;
+                    
+                    // Draw S-curve
+                    ctx.strokeStyle = "#95fd80a6";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(startX, inputY);
+                    
+                    // S-curve control points
+                    const midX = this.size[0] / 2;
+                    const cp1X = midX * 1.2;
+                    const cp2X = midX * 1.2;
+                    
+                    ctx.bezierCurveTo(cp1X, inputY, cp2X, outputY, endX, outputY);
+                    ctx.stroke();
                 }
             };
 
