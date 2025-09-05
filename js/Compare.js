@@ -179,7 +179,7 @@ app.registerExtension({
                 // Comparison operator text removed - toggle is self-explanatory
                 
                 // Draw result indicator (boolean toggle-style)
-                const toggleWidth = 40;
+                const toggleWidth = 30;
                 const toggleHeight = TOGGLE_HEIGHT;
                 const toggleLeft = (this.size[0] - toggleWidth) / 2 + 8;
                 const toggleY = this.size[1] / 2 - 8;
@@ -246,7 +246,7 @@ app.registerExtension({
                 
                 // Draw toggle background
                 ctx.fillStyle = isActive ? 
-                    (previewResult ? TOGGLE_ACTIVE_COLOR : TOGGLE_INACTIVE_COLOR) : 
+                    (previewResult ? "rgba(106, 194, 65, 0.281)" : "rgba(226, 74, 74, 0.281)") : 
                     "#2b2b2b";
                 ctx.beginPath();
                 ctx.roundRect(toggleLeft, toggleY, toggleWidth, toggleHeight, TOGGLE_CORNER_RADIUS);
@@ -258,7 +258,7 @@ app.registerExtension({
                     toggleLeft + HANDLE_PADDING;
                 const handleY = toggleY + (toggleHeight - HANDLE_SIZE) / 2;
                 
-                ctx.fillStyle = isActive ? HANDLE_COLOR : "#555";
+                ctx.fillStyle = isActive ? "rgba(122, 122, 122, 0.562)" : "#555";
                 ctx.beginPath();
                 ctx.roundRect(handleX, handleY, HANDLE_SIZE, HANDLE_SIZE, HANDLE_CORNER_RADIUS);
                 ctx.fill();

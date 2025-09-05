@@ -16,9 +16,7 @@ app.registerExtension({
                 
                 // Set transparent background
                 // this.bgcolor = "transparent";
-                this.bgcolor = "rgba(24, 24, 24, 0.829)"
-                this.color = "transparent";
-                this.boxcolor = "transparent";
+                this.bgcolor = "rgba(24, 24, 24, 0.281)";
                 
                 this.size = [80, 28];
                 this.resizable = true;
@@ -26,11 +24,15 @@ app.registerExtension({
                 // Hide input/output labels like other CRZ nodes
                 if (this.inputs && this.inputs[0]) {
                     this.inputs[0].localized_name = " ";
+                    this.inputs[0].color_on = "rgba(135, 56, 199, 1)";
+                    this.inputs[0].color_off = "rgba(51, 51, 51, 1)";
                 }
                 if (this.outputs && this.outputs[0]) {
                     this.outputs[0].localized_name = " ";
+                    this.outputs[0].color_on = "rgba(135, 56, 199, 1)";
+                    this.outputs[0].color_off = "rgba(51, 51, 51, 1)";
                 }
-                
+
                 // Mark this as a passthrough node for identification
                 this.isPassthrough = true;
                 this.isHovered = false;

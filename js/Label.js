@@ -21,6 +21,7 @@ app.registerExtension({
             // Set fixed size and disable resizing
             nodeType.min_size = [LABEL_WIDTH, LABEL_HEIGHT];
             
+            
             const onNodeCreated = nodeType.prototype.onNodeCreated;
             nodeType.prototype.onNodeCreated = function () {
                 if (onNodeCreated) {
@@ -30,7 +31,7 @@ app.registerExtension({
                 // Set fixed size and disable resizing
                 this.size = [LABEL_WIDTH, LABEL_HEIGHT];
                 this.resizable = true;
-                
+                this.bgcolor = "rgba(24, 24, 24, 0.281)";
                 // Initialize properties
                 this.properties = this.properties || {};
                 this.properties.label_text = this.properties.label_text || "Label";

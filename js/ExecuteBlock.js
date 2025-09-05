@@ -140,14 +140,14 @@ app.registerExtension({
                 }
                 
                 // Draw block indicator (boolean toggle-style)
-                const toggleWidth = 40;
+                const toggleWidth = 30;
                 const toggleHeight = TOGGLE_HEIGHT;
                 const toggleLeft = (this.size[0] - toggleWidth) / 2 -2;
                 const toggleY = this.size[1] / 2 - 8;
                 
                 // Toggle background - green when allowing, red when blocking
                 ctx.fillStyle = isActive ? 
-                    (blockState ? TOGGLE_ACTIVE_COLOR : TOGGLE_INACTIVE_COLOR) : 
+                    (blockState ? "rgba(106, 194, 65, 0.281)" : "rgba(226, 74, 74, 0.281)") : 
                     "#2b2b2b";
                 ctx.beginPath();
                 ctx.roundRect(toggleLeft, toggleY, toggleWidth, toggleHeight, TOGGLE_CORNER_RADIUS);
@@ -159,7 +159,7 @@ app.registerExtension({
                 const handleX = leftPos + (rightPos - leftPos) * (blockState ? 1 : 0);
                 const handleY = toggleY + (toggleHeight - HANDLE_SIZE) / 2;
                 
-                ctx.fillStyle = isActive ? HANDLE_COLOR : "#555";
+                ctx.fillStyle = isActive ? "rgba(122, 122, 122, 0.562)" : "#555";
                 ctx.beginPath();
                 ctx.roundRect(handleX, handleY, HANDLE_SIZE, HANDLE_SIZE, HANDLE_CORNER_RADIUS);
                 ctx.fill();
