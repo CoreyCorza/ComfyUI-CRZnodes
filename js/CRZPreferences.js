@@ -191,23 +191,7 @@ app.registerExtension({
                 
                 // Create keyboard shortcuts info
                 const shortcutsInfo = document.createElement('div');
-                shortcutsInfo.style.cssText = `
-                    margin-top: 20px;
-                    padding: 10px;
-                    background: #2a2a2a;
-                    border-radius: 4px;
-                    font-size: 12px;
-                    color: #ccc;
-                `;
-                shortcutsInfo.innerHTML = `
-                    <strong>Keyboard Shortcuts:</strong><br>
-                    <br>
-                    <strong>• Alt+Backtick</strong> to toggle all CRZ connections<br>
-                    <br>
-                    <strong>• Ctrl+Shift+C</strong> to toggle this sidebar<br>
-                    <br>
-                    Note: Keyboard shortcuts can be changed in Comfyui's settings
-                `;
+
                 
                 // Assemble the UI
                 settingsContainer.appendChild(passthroughContainer);
@@ -215,7 +199,7 @@ app.registerExtension({
                 
                 container.appendChild(header);
                 container.appendChild(settingsContainer);
-                container.appendChild(shortcutsInfo);
+
                 
                 el.appendChild(container);
                 };
