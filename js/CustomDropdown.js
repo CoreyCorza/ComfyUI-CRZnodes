@@ -33,7 +33,7 @@ class CRZCustomDropdown {
         this.node.properties.dropdown_value = this.node.properties.dropdown_value ?? "";
         this.node.properties.dropdown_options = this.node.properties.dropdown_options ?? ["Option 1", "Option 2", "Option 3"];
         this.node.properties.dropdown_selected_index = this.node.properties.dropdown_selected_index ?? 0;
-        
+        this.node.size = [NODE_WIDTH, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
         // Set initial value to first option
         if (this.node.properties.dropdown_options.length > 0) {
             this.node.properties.dropdown_value = this.node.properties.dropdown_options[this.node.properties.dropdown_selected_index];
@@ -250,6 +250,11 @@ app.registerExtension({
 
             nodeType.prototype.onDrawForeground = function(ctx) {
                 if (this.flags.collapsed || !this.crzCustomDropdown) return;
+                
+                // Height snapping like other CRZ slider nodes - prevent vertical resize
+                if (this.size[1] > LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER) {
+                    this.size[1] = LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER;
+                }
                 
                 // Mark as configured
                 this.configured = true;

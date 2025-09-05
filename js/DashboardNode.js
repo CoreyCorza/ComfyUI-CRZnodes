@@ -597,6 +597,11 @@ app.registerExtension({
             nodeType.prototype.onDrawForeground = function(ctx) {
                 if (this.flags.collapsed || !this.crzDashboardNode) return;
                 
+                // Height snapping like other CRZ slider nodes - prevent vertical resize
+                if (this.size[1] > LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER) {
+                    this.size[1] = LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER;
+                }
+                
                 // Mark as configured
                 this.configured = true;
 
