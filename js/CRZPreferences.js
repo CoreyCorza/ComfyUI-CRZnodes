@@ -1,240 +1,231 @@
 // ComfyUI - CRZ Nodes Preferences
 import { app } from "../../scripts/app.js";
 
+// Toggle dashboard and passthrough connections function
+const toggleDashboardConnections = () => {
+    const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
+    const newValue = !prefs.always_show_dashboard_connections;
+    
+    const newPrefs = {
+        ...prefs,
+        always_show_dashboard_connections: newValue,
+        always_show_passthrough: newValue
+    };
+    
+    localStorage.setItem("crz_preferences", JSON.stringify(newPrefs));
+    window.dispatchEvent(new CustomEvent("crz_preferences_changed", { detail: newPrefs }));
+    
+    // Force redraw to apply changes immediately
+    try {
+        if (window?.LiteGraph?.LGraphCanvas?.active_canvas) {
+            window.LiteGraph.LGraphCanvas.active_canvas.setDirty(true, true);
+        }
+        if (app?.graph?.list_of_graphcanvas?.length) {
+            for (const gc of app.graph.list_of_graphcanvas) {
+                try { gc.setDirty(true, true); } catch (_) {}
+            }
+        }
+        if (app?.canvas) {
+            try { app.canvas.setDirty(true, true); } catch (_) {}
+        }
+    } catch (_) {}
+    
+    // Remove any existing notification first
+    const existingNotification = document.getElementById('crz-notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Show brief notification
+    const notification = document.createElement("div");
+    notification.id = 'crz-notification';
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 100px;
+        left: 100px;
+        background: ${newValue ? '#46975e3a' : '#8046973a'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 4px;
+        z-index: 10001;
+        font-size: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        transition: opacity 0.3s ease;
+    `;
+    notification.textContent = `CRZ connections ${newValue ? 'enabled' : 'hidden'}`;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 2000);
+};
+
+
 app.registerExtension({
     name: "CRZ.Preferences",
+    commands: [
+        {
+            id: "crz_toggle_connections",
+            label: "Toggle CRZ Connections",
+            function: () => {
+                toggleDashboardConnections();
+            }
+        }
+    ],
+    keybindings: [
+        {
+            combo: { key: "`", alt: true },
+            commandId: "crz_toggle_connections"
+        }
+    ],
     async setup() {
-        // Show CRZ preferences dialog (standalone function)
-        const showCRZPreferencesDialog = () => {
-            const dialog = document.createElement("div");
-            dialog.id = "crz-preferences-dialog";
-            dialog.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 100vw;
-                height: 100vh;
-                background: rgba(0,0,0,0.5);
-                z-index: 10000;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                pointer-events: auto;
-            `;
-
-            const content = document.createElement("div");
-            content.style.cssText = `
-                background: #202020;
-                border: 1px solid #333;
-                border-radius: 8px;
-                padding: 20px;
-                max-width: 500px;
-                width: 90%;
-                max-height: 80vh;
-                overflow-y: auto;
-                position: relative;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.8);
-            `;
-
-            content.innerHTML = `
-                <h2 style="color: #fff; margin-top: 0;">CRZ Nodes Preferences</h2>
+        // Register CRZ sidebar tab
+        app.extensionManager.registerSidebarTab({
+            id: "crz_settings",
+            icon: "pi pi-cog",
+            title: "CRZ",
+            tooltip: "CRZ Nodes Settings",
+            type: "custom",
+            render: (el) => {
+                // Function to render sidebar content
+                const renderSidebarContent = () => {
+                    // Clear any existing content
+                    el.innerHTML = '';
+                    
+                    // Create container
+                    const container = document.createElement('div');
+                    container.style.cssText = `
+                        padding: 15px;
+                        color: #fff;
+                        font-family: Arial, sans-serif;
+                    `;
+                    
+                    // Create header
+                    const header = document.createElement('h3');
+                    header.textContent = 'CRZ Nodes Settings';
+                    header.style.cssText = `
+                        margin: 0 0 20px 0;
+                        color: #fff;
+                        font-size: 18px;
+                        border-bottom: 1px solid #333;
+                        padding-bottom: 10px;
+                    `;
+                    
+                    // Create settings container
+                    const settingsContainer = document.createElement('div');
+                    settingsContainer.style.cssText = `
+                        display: flex;
+                        flex-direction: column;
+                        gap: 15px;
+                    `;
+                    
+                    // Load current preferences
+                    const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
                 
-                <div style="margin-bottom: 15px;">
-                    <label style="color: #fff; display: block; margin-bottom: 5px;">
-                        <input type="checkbox" id="always_show_passthrough" style="margin-right: 8px;">
-                        Show passthrough connections
-                    </label>
-                </div>
-
-                <div style="margin-bottom: 15px;">
-                    <label style="color: #fff; display: block; margin-bottom: 5px;">
-                        <input type="checkbox" id="always_show_dashboard_connections" style="margin-right: 8px;">
-                        Show dashboard connections
-                    </label>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="color: #fff; display: block; margin-bottom: 5px;">
-                        <input type="checkbox" id="always_show_floating_button" style="margin-right: 8px;">
-                        Show floating button
-                    </label>
-                </div>
-
-                <div style="text-align: right;">
-                    <button id="save_prefs" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-right: 10px;">Save</button>
-                    <button id="cancel_prefs" style="background: #666; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Close</button>
-                </div>
-            `;
-
-            dialog.appendChild(content);
-            document.body.appendChild(dialog);
-
-            // Load current preferences
-            const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
-            content.querySelector("#always_show_passthrough").checked = prefs.always_show_passthrough === true;
-            // Default OFF when undefined
-            content.querySelector("#always_show_dashboard_connections").checked = prefs.always_show_dashboard_connections === true;
-            // Default ON when undefined
-            content.querySelector("#always_show_floating_button").checked = prefs.always_show_floating_button !== false;
-
-            // Helper to force all canvases to redraw now
-            const forceRedraw = () => {
-                try {
-                    if (window?.LiteGraph?.LGraphCanvas?.active_canvas) {
-                        window.LiteGraph.LGraphCanvas.active_canvas.setDirty(true, true);
-                    }
-                    if (app?.graph?.list_of_graphcanvas?.length) {
-                        for (const gc of app.graph.list_of_graphcanvas) {
-                            try { gc.setDirty(true, true); } catch (_) {}
+                // Helper to save preferences
+                const savePreferences = () => {
+                    const newPrefs = {
+                        always_show_passthrough: passthroughCheckbox.checked,
+                        always_show_dashboard_connections: dashboardCheckbox.checked,
+                        always_show_floating_button: false // Always false since we're using sidebar now
+                    };
+                    localStorage.setItem("crz_preferences", JSON.stringify(newPrefs));
+                    window.dispatchEvent(new CustomEvent("crz_preferences_changed", { detail: newPrefs }));
+                    
+                    // Force redraw
+                    try {
+                        if (window?.LiteGraph?.LGraphCanvas?.active_canvas) {
+                            window.LiteGraph.LGraphCanvas.active_canvas.setDirty(true, true);
                         }
-                    }
-                    if (app?.canvas) {
-                        try { app.canvas.setDirty(true, true); } catch (_) {}
-                    }
-                } catch (_) {}
-            };
-
-            // Button helpers
-            const removeCRZButton = () => {
-                const existing = document.getElementById('crz-settings-button');
-                if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
-            };
-
-            const addCRZButton = () => {
-                if (document.getElementById('crz-settings-button')) return; // avoid duplicates
-                const btn = document.createElement('button');
-                btn.id = 'crz-settings-button';
-                btn.innerHTML = 'CRZ';
-                btn.style.cssText = `
-                    position: fixed;
-                    top: 120px;
-                    right: 20px;
-                    z-index: 2147483647; /* max */
-                    background: #3f3f3f5d;
-                    color: white;
-                    border: none;
-                    padding: 6px;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-size: 10px;
-                    font-weight: bold;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
-                    pointer-events: auto;
-                    opacity: 0.3;
-                    transition: opacity 120ms ease-in-out;
-                `;
-                btn.title = 'CRZ Nodes Settings (Ctrl+Shift+C)';
-                btn.onclick = () => showCRZPreferencesDialog();
-                btn.addEventListener('mouseenter', () => { btn.style.opacity = '1'; });
-                btn.addEventListener('mouseleave', () => { btn.style.opacity = '0.3'; });
-                (document.body || document.documentElement).appendChild(btn);
-            };
-
-            const ensureCRZButtonState = () => {
-                const current = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
-                if (current.always_show_floating_button === false) {
-                    removeCRZButton();
-                } else {
-                    addCRZButton();
-                }
-            };
-
-            // Helper to read current UI state and persist
-            const persistFromUI = () => {
-                const newPrefs = {
-                    always_show_passthrough: content.querySelector("#always_show_passthrough").checked,
-                    always_show_dashboard_connections: content.querySelector("#always_show_dashboard_connections").checked,
-                    always_show_floating_button: content.querySelector("#always_show_floating_button").checked
+                        if (app?.graph?.list_of_graphcanvas?.length) {
+                            for (const gc of app.graph.list_of_graphcanvas) {
+                                try { gc.setDirty(true, true); } catch (_) {}
+                            }
+                        }
+                        if (app?.canvas) {
+                            try { app.canvas.setDirty(true, true); } catch (_) {}
+                        }
+                    } catch (_) {}
                 };
-                localStorage.setItem("crz_preferences", JSON.stringify(newPrefs));
-                window.dispatchEvent(new CustomEvent("crz_preferences_changed", { detail: newPrefs }));
-                ensureCRZButtonState();
-                forceRedraw();
-                setTimeout(forceRedraw, 0);
-                setTimeout(forceRedraw, 50);
-            };
-
-            // Live update on toggle
-            content.querySelector("#always_show_passthrough").addEventListener("change", persistFromUI);
-            content.querySelector("#always_show_dashboard_connections").addEventListener("change", persistFromUI);
-            content.querySelector("#always_show_floating_button").addEventListener("change", persistFromUI);
-
-            content.querySelector("#save_prefs").addEventListener("click", () => {
-                persistFromUI();
-                document.body.removeChild(dialog);
-            });
-
-            content.querySelector("#cancel_prefs").addEventListener("click", () => {
-                document.body.removeChild(dialog);
-            });
-
-            // Close on background click
-            dialog.addEventListener("click", (e) => {
-                if (e.target === dialog) {
-                    document.body.removeChild(dialog);
-                }
-            });
-        };
-
-        // Keyboard shortcut
-        document.addEventListener('keydown', (e) => {
-            // Ctrl+Shift+C to open CRZ preferences
-            if (e.ctrlKey && e.shiftKey && e.key === 'C') {
-                e.preventDefault();
-                showCRZPreferencesDialog();
+                
+                // Create passthrough connections checkbox
+                const passthroughContainer = document.createElement('div');
+                passthroughContainer.style.cssText = 'display: flex; align-items: center; gap: 8px;';
+                
+                const passthroughCheckbox = document.createElement('input');
+                passthroughCheckbox.type = 'checkbox';
+                passthroughCheckbox.id = 'sidebar_passthrough';
+                passthroughCheckbox.checked = prefs.always_show_passthrough === true;
+                passthroughCheckbox.addEventListener('change', savePreferences);
+                
+                const passthroughLabel = document.createElement('label');
+                passthroughLabel.htmlFor = 'sidebar_passthrough';
+                passthroughLabel.textContent = 'Show passthrough connections';
+                passthroughLabel.style.cssText = 'color: #fff; cursor: pointer; user-select: none;';
+                
+                passthroughContainer.appendChild(passthroughCheckbox);
+                passthroughContainer.appendChild(passthroughLabel);
+                
+                // Create dashboard connections checkbox
+                const dashboardContainer = document.createElement('div');
+                dashboardContainer.style.cssText = 'display: flex; align-items: center; gap: 8px;';
+                
+                const dashboardCheckbox = document.createElement('input');
+                dashboardCheckbox.type = 'checkbox';
+                dashboardCheckbox.id = 'sidebar_dashboard';
+                dashboardCheckbox.checked = prefs.always_show_dashboard_connections === true;
+                dashboardCheckbox.addEventListener('change', savePreferences);
+                
+                const dashboardLabel = document.createElement('label');
+                dashboardLabel.htmlFor = 'sidebar_dashboard';
+                dashboardLabel.textContent = 'Show dashboard connections';
+                dashboardLabel.style.cssText = 'color: #fff; cursor: pointer; user-select: none;';
+                
+                dashboardContainer.appendChild(dashboardCheckbox);
+                dashboardContainer.appendChild(dashboardLabel);
+                
+                // Create keyboard shortcuts info
+                const shortcutsInfo = document.createElement('div');
+                shortcutsInfo.style.cssText = `
+                    margin-top: 20px;
+                    padding: 10px;
+                    background: #2a2a2a;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    color: #ccc;
+                `;
+                shortcutsInfo.innerHTML = `
+                    <strong>Keyboard Shortcuts:</strong><br>
+                    <br>
+                    <strong>• Alt+Backtick</strong> to toggle all CRZ connections<br>
+                    <br>
+                    <strong>• Ctrl+Shift+C</strong> to toggle this sidebar<br>
+                    <br>
+                    Note: Keyboard shortcuts can be changed in Comfyui's settings
+                `;
+                
+                // Assemble the UI
+                settingsContainer.appendChild(passthroughContainer);
+                settingsContainer.appendChild(dashboardContainer);
+                
+                container.appendChild(header);
+                container.appendChild(settingsContainer);
+                container.appendChild(shortcutsInfo);
+                
+                el.appendChild(container);
+                };
+                
+                // Initial render
+                renderSidebarContent();
+                
+                // Listen for refresh events from dialog
+                window.addEventListener("crz_sidebar_refresh", renderSidebarContent);
             }
         });
-
-        // Floating button management available at top-level too
-        const removeCRZButton = () => {
-            const existing = document.getElementById('crz-settings-button');
-            if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
-        };
-        const addCRZButton = () => {
-            if (document.getElementById('crz-settings-button')) return; // avoid duplicates
-            const btn = document.createElement('button');
-            btn.id = 'crz-settings-button';
-            btn.innerHTML = 'CRZ';
-            btn.style.cssText = `
-                position: fixed;
-                bottom: 220px;
-                left: 14px;
-                z-index: 2147483647; /* max */
-                background: rgba(166, 73, 219, 0.7);
-                color: white;
-                border: none;
-                padding: 6px;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 10px;
-                font-weight: bold;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.35);
-                pointer-events: auto;
-                opacity: 0.7;
-                transition: opacity 120ms ease-in-out;
-            `;
-            btn.title = 'CRZ Nodes Settings (Ctrl+Shift+C)';
-            btn.onclick = () => showCRZPreferencesDialog();
-            btn.addEventListener('mouseenter', () => { btn.style.opacity = '1'; });
-            btn.addEventListener('mouseleave', () => { btn.style.opacity = '0.7'; });
-            (document.body || document.documentElement).appendChild(btn);
-        };
-        const ensureCRZButtonState = () => {
-            const current = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
-            if (current.always_show_floating_button === false) {
-                removeCRZButton();
-            } else {
-                addCRZButton();
-            }
-        };
-
-        // Try ensure state immediately, then a few retries in case UI isn't ready yet
-        setTimeout(ensureCRZButtonState, 300);
-        setTimeout(ensureCRZButtonState, 1200);
-        setTimeout(ensureCRZButtonState, 2500);
-
-        // React to external preference change events too
-        window.addEventListener("crz_preferences_changed", ensureCRZButtonState);
     }
 });

@@ -58,7 +58,7 @@ class CRZDashboardNode {
         this.node.properties.slider_max = this.node.properties.slider_max ?? 1.0;
         this.node.properties.slider_step = this.node.properties.slider_step ?? 0.01;
         this.node.properties.slider_decimals = this.node.properties.slider_decimals ?? 2;
-        this.node.properties.slider_name = this.node.properties.slider_name ?? "Placeholder";
+        this.node.properties.slider_name = this.node.properties.slider_name ?? "Dashboard Node";
         this.node.properties.slider_type = this.node.properties.slider_type ?? "FLOAT";
         this.node.properties.slider_options = this.node.properties.slider_options ?? [""];
         this.node.properties.slider_selected_index = this.node.properties.slider_selected_index ?? 0;
@@ -673,7 +673,7 @@ app.registerExtension({
                 const min = this.properties.slider_min ?? 0.0;
                 const max = this.properties.slider_max ?? 1.0;
                 const decimals = this.properties.slider_decimals ?? 2;
-                const name = this.properties.slider_name ?? "Placeholder";
+                const name = this.properties.slider_name ?? "Dashboard Node";
                 const type = this.properties.slider_type ?? "FLOAT";
                 
                 const sliderY = NODE_PADDING;
@@ -681,7 +681,7 @@ app.registerExtension({
                 // Check if this slider should be active (not greyed out)
                 const isConnected = this.outputs && this.outputs[0] && 
                                    this.outputs[0].links && this.outputs[0].links.length > 0;
-                const hasCustomName = name !== "Placeholder";
+                const hasCustomName = name !== "Dashboard Node";
                 const isActive = isConnected || hasCustomName;
                 
                 // Choose colors based on active status
