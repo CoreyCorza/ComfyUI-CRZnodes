@@ -69,15 +69,17 @@ Double click the compare node to modify the comparison type.
 ![brave_rz94tRuHMj](https://github.com/user-attachments/assets/61eb463d-b097-4bae-931e-376092ce6336)
 
 #### Switch
-Switches input data
+Switches input data.  
+First input socket is True, second input socket is False.
 ![brave_JdJfFl2gK1](https://github.com/user-attachments/assets/2eeab7a4-e4ac-4e2a-b3ab-63c223ddda8d)
 
 #### Execute Switch
-Only runs downstream nodes of the active output
+Only runs downstream nodes of the active output.  
+First output socket is True, second output socket is False.
 ![brave_qn8I8NEnjL](https://github.com/user-attachments/assets/f63c2560-abbe-4145-8be6-0906c6e62a3e)
 
 #### Execute Block
-Blocks downstream nodes from running
+Blocks downstream nodes from running.  
 ![brave_LIs0vyfoe6](https://github.com/user-attachments/assets/6fcbbe82-e032-4dd8-9270-b13becc32ef9)
 
 # Passthrough Node
