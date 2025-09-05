@@ -8,7 +8,8 @@ Keyboard shortcuts integrated into Comfyui. Search for `crz`
 <img width="1157" height="954" alt="brave_wukdUzz8hF" src="https://github.com/user-attachments/assets/30cfd658-6d91-488c-8c01-2f284d1709ec" />
 
 Settings moved to the sidebar
-![brave_0ip3pxyrJS](https://github.com/user-attachments/assets/0f1f13b5-1ac6-4f3f-9ff7-66567ada14e2)
+![brave_UASrjUa0AF](https://github.com/user-attachments/assets/09ac5a36-c34d-4d55-823e-f9dd2a321873)
+
 
 
 # Installation  
