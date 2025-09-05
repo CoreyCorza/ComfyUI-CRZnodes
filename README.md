@@ -37,7 +37,7 @@ All nodes can be found easily by searching for `crz`
 
 
 
-#### Configuring
+#### Configuring Sliders
 To change the min/max range of the sliders, double click on the slider handle/track.  
 The description tells you what each value represents.  
 Here the min is 1, the max is set to 10, and the slider handle will step in increments of 1.  
