@@ -1,17 +1,3 @@
-# Noteable Changes
-## 5th Sept 2025  
-
-If a text display is truncated on a node, a tooltip will appear on mouse hover showing the full text
-![brave_MyyMf8NVaT](https://github.com/user-attachments/assets/45c4269e-67c2-472d-973d-4a9a59052587)
-
-Keyboard shortcuts integrated into Comfyui. Search for `crz`
-<img width="1157" height="954" alt="brave_wukdUzz8hF" src="https://github.com/user-attachments/assets/30cfd658-6d91-488c-8c01-2f284d1709ec" />
-
-Settings moved to the sidebar
-![brave_UASrjUa0AF](https://github.com/user-attachments/assets/09ac5a36-c34d-4d55-823e-f9dd2a321873)
-
-
-
 # Installation  
 git clone like you normally do to the `custom_nodes` folder:  
 `git clone https://github.com/CoreyCorza/ComfyUI-CRZnodes.git`  
@@ -131,6 +117,21 @@ The dashboard node should just automatically detect what its connected to and ch
 Meant to be an all-in-one replacement for the other individual dashboard nodes. But I dont want to break my old workflows just yet, and haven't tested it much.  
 So it does its own thing for now.
 ![brave_B9bUJKXOM1](https://github.com/user-attachments/assets/efc795a0-95cc-4c6c-8ab9-87b79fe41a8c)
+
+# Noteable Changes
+## 5th Sept 2025  
+
+If a text display is truncated on a node, a tooltip will appear on mouse hover showing the full text
+![brave_MyyMf8NVaT](https://github.com/user-attachments/assets/45c4269e-67c2-472d-973d-4a9a59052587)
+
+Keyboard shortcuts integrated into Comfyui. Search for `crz`
+<img width="1157" height="954" alt="brave_wukdUzz8hF" src="https://github.com/user-attachments/assets/30cfd658-6d91-488c-8c01-2f284d1709ec" />
+
+Settings moved to the sidebar
+![brave_UASrjUa0AF](https://github.com/user-attachments/assets/09ac5a36-c34d-4d55-823e-f9dd2a321873)
+
+
+
 
 # Credit
 Inspired by everyone. Credit to everyone  
