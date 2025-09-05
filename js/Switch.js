@@ -36,6 +36,9 @@ app.registerExtension({
                     this.widgets[0].hidden = true;
                 }
                 
+                // Mark as CRZ node for connection hiding
+                this.isCRZNode = true;
+                
                 // Set input labels for clarity - match Python parameter names
                 this.onAdded = function() {
                     if (this.inputs && this.inputs.length >= 2) {

@@ -51,6 +51,9 @@ class CRZFloatSlider
         this.node.widgets[0].hidden = true;
         this.node.widgets[0].type = "hidden";
 
+        this.isCRZNode = true;
+        
+        this.node.isCRZNode = true;
         this.node.onAdded = function ()
         {
             this.outputs[0].name = this.outputs[0].localized_name = "";

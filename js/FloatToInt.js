@@ -22,6 +22,9 @@ app.registerExtension({
                 this.size = [80, 28];
                 this.resizable = true;
                 
+                // Mark as CRZ node for connection hiding
+                this.isCRZNode = true;
+
                 // Hide input/output labels like other CRZ nodes
                 if (this.inputs && this.inputs[0]) {
                     this.inputs[0].localized_name = " ";
