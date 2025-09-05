@@ -24,11 +24,11 @@ All nodes can be found easily by searching for `crz`
 - Integer Slider
 - Dropdown
 - Custom Dropdown (user defined)
-- Compare
 - Image Selector 
 - Dashboard Node (experimental, see note down the bottom of page)
 - Compact int-to-float / float-to-int
 - Passthrough
+- Compare
 - Switch
 - Execute Switch
 - Execute Block
