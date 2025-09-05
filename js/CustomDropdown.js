@@ -53,6 +53,54 @@ class CRZCustomDropdown {
             }
         };
 
+        // Tooltip state
+        this.node.showTooltip = false;
+        this.node.tooltipText = "";
+
+        // Mouse move handler for tooltip
+        this.node.onMouseMove = function(e) {
+            if (e.canvasY - this.pos[1] < 0) return false;
+            
+            const dropdownWidth = TRACK_WIDTH + 45;
+            const dropdownLeft = this.size[0] - TRACK_RIGHT_PADDING;
+            const sliderY = NODE_PADDING;
+            const dropdownY = sliderY + TRACK_VERTICAL_OFFSET - 8;
+            const dropdownHeight = 16;
+            
+            const isInDropdown = e.canvasX >= this.pos[0] + dropdownLeft && 
+                               e.canvasX <= this.pos[0] + dropdownLeft + dropdownWidth &&
+                               e.canvasY >= this.pos[1] + dropdownY && 
+                               e.canvasY <= this.pos[1] + dropdownY + dropdownHeight;
+            
+            if (isInDropdown) {
+                this.showTooltip = true;
+                this.tooltipText = this.properties.dropdown_value || "";
+                // Store the mouse event for later use
+                this.lastMouseEvent = e;
+            } else {
+                this.showTooltip = false;
+            }
+            
+            return false;
+        };
+
+        // Mouse leave handler
+        this.node.onMouseLeave = function(e) {
+            this.showTooltip = false;
+            if (this.tooltipElement) {
+                this.tooltipElement.style.display = 'none';
+            }
+            return false;
+        };
+
+        // Cleanup tooltip when node is removed
+        this.node.onRemoved = function() {
+            if (this.tooltipElement) {
+                this.tooltipElement.remove();
+                this.tooltipElement = null;
+            }
+        };
+
         // Mouse event handler for dropdown click
         this.node.onMouseDown = function(e) {
             if (e.canvasY - this.pos[1] < 0) return false;
@@ -312,6 +360,44 @@ app.registerExtension({
                     truncatedValue = truncatedValue.substring(0, 8) + "..";
                 }
                 ctx.fillText(truncatedValue, dropdownLeft + dropdownWidth/2, sliderY + 14);
+                
+                // Draw tooltip using same method as other CRZ nodes
+                if (this.showTooltip && this.tooltipText) {
+                    if (!this.tooltipElement) {
+                        this.tooltipElement = document.createElement("div");
+                        this.tooltipElement.style.cssText = `
+                            position: fixed;
+                            background: rgba(24, 24, 24, 0.95);
+                            color: #868686;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 16px;
+                            pointer-events: none;
+                            z-index: 10000;
+                            border: 1px solid rgba(41, 41, 41, 0.9);
+                            white-space: nowrap;
+                        `;
+                        document.body.appendChild(this.tooltipElement);
+                    }
+                    
+                    // Get screen coordinates from the stored mouse event
+                    let screenX = 0;
+                    let screenY = 0;
+                    
+                    if (this.lastMouseEvent) {
+                        // Try to get client coordinates from the original event
+                        const originalEvent = this.lastMouseEvent.originalEvent || this.lastMouseEvent;
+                        screenX = originalEvent.clientX || 0;
+                        screenY = originalEvent.clientY || 0;
+                    }
+                    
+                    this.tooltipElement.textContent = this.tooltipText;
+                    this.tooltipElement.style.left = (screenX - this.tooltipElement.offsetWidth/2) + 'px';
+                    this.tooltipElement.style.top = (screenY - 60) + 'px';
+                    this.tooltipElement.style.display = 'block';
+                } else if (this.tooltipElement) {
+                    this.tooltipElement.style.display = 'none';
+                }
             };
         }
     }

@@ -69,6 +69,51 @@ class CRZStringNode {
             }
         };
 
+        // Tooltip state
+        this.node.showTooltip = false;
+        this.node.tooltipText = "";
+
+        // Mouse move handler for tooltip
+        this.node.onMouseMove = function(e) {
+            if (e.canvasY - this.pos[1] < 0) return false;
+            
+            const textAreaWidth = 115;
+            const textAreaLeft = this.size[0] - TRACK_RIGHT_PADDING;
+            const textAreaY = NODE_PADDING + 10 - 8;
+            const textAreaHeight = 16;
+            
+            const isInTextArea = e.canvasX >= this.pos[0] + textAreaLeft && 
+                               e.canvasX <= this.pos[0] + textAreaLeft + textAreaWidth &&
+                               e.canvasY >= this.pos[1] + textAreaY && 
+                               e.canvasY <= this.pos[1] + textAreaY + textAreaHeight;
+            
+            if (isInTextArea) {
+                this.showTooltip = true;
+                this.tooltipText = this.properties.text_value || "";
+                // Store the mouse event for later use
+                this.lastMouseEvent = e;
+            } else {
+                this.showTooltip = false;
+            }
+            
+            return false;
+        };
+
+        // Mouse leave handler
+        this.node.onMouseLeave = function(e) {
+            this.showTooltip = false;
+            return false;
+        };
+
+        // Cleanup tooltip when node is removed
+        this.node.onRemoved = function() {
+            if (this.tooltipElement) {
+                this.tooltipElement.remove();
+                this.tooltipElement = null;
+            }
+        };
+
+
         // Store the mouse handler function to avoid recursion
         this.mouseDownHandler = function(e)
         {
@@ -223,6 +268,56 @@ app.registerExtension({
                     truncatedValue = truncatedValue.substring(0, 12) + "..";
                 }
                 ctx.fillText(truncatedValue, textAreaLeft + textAreaWidth/2, stringY + 14);
+                
+                // Draw tooltip using same method as dropdown
+                if (this.showTooltip && this.tooltipText) {
+                    if (!this.tooltipElement) {
+                        this.tooltipElement = document.createElement("div");
+                        this.tooltipElement.style.cssText = `
+                            position: fixed;
+                            background: rgba(24, 24, 24, 0.95);
+                            color: #868686;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 16px;
+                            pointer-events: none;
+                            z-index: 10000;
+                            border: 1px solid rgba(41, 41, 41, 0.9);
+                            white-space: nowrap;
+                        `;
+                        document.body.appendChild(this.tooltipElement);
+                    }
+                    
+                    // Position tooltip above text area - try multiple canvas detection methods
+                    let canvas = null;
+                    if (this.graph && this.graph.canvas) {
+                        canvas = this.graph.canvas.canvas || this.graph.canvas;
+                    }
+                    if (!canvas && this.graph && this.graph.constructor && this.graph.constructor.canvas) {
+                        canvas = this.graph.constructor.canvas;
+                    }
+                    if (!canvas && app && app.canvas) {
+                        canvas = app.canvas.canvas || app.canvas;
+                    }
+                    
+                    // Get screen coordinates from the stored mouse event
+                    let screenX = 0;
+                    let screenY = 0;
+                    
+                    if (this.lastMouseEvent) {
+                        // Try to get client coordinates from the original event
+                        const originalEvent = this.lastMouseEvent.originalEvent || this.lastMouseEvent;
+                        screenX = originalEvent.clientX || 0;
+                        screenY = originalEvent.clientY || 0;
+                    }
+                    
+                    this.tooltipElement.textContent = this.tooltipText;
+                    this.tooltipElement.style.left = (screenX - this.tooltipElement.offsetWidth/2) + 'px';
+                    this.tooltipElement.style.top = (screenY - 60) + 'px';
+                    this.tooltipElement.style.display = 'block';
+                } else if (this.tooltipElement) {
+                    this.tooltipElement.style.display = 'none';
+                }
             };
 
             nodeType.prototype.onDblClick = function(e, pos, canvas) {

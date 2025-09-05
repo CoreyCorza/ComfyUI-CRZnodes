@@ -69,7 +69,53 @@ app.registerExtension({
                         this.outputs[0].name = this.outputs[0].localized_name = "";
                     }
                 };
-                
+
+                // Tooltip state
+                this.showTooltip = false;
+                this.tooltipText = "";
+
+                // Mouse move handler for tooltip
+                this.onMouseMove = function(e) {
+                    if (e.canvasY - this.pos[1] < 0) return false;
+                    
+                    const dropdownLeft = this.size[0] - DROPDOWN_RIGHT_PADDING - DROPDOWN_WIDTH;
+                    const dropdownY = (this.slot_start_y || 0) + LiteGraph.NODE_SUBTEXT_SIZE * 1.5 - LiteGraph.NODE_SUBTEXT_SIZE + 3;
+                    const dropdownHeight = LiteGraph.NODE_SUBTEXT_SIZE + 4;
+                    
+                    const isInDropdown = e.canvasX >= this.pos[0] + dropdownLeft && 
+                                       e.canvasX <= this.pos[0] + dropdownLeft + DROPDOWN_WIDTH &&
+                                       e.canvasY >= this.pos[1] + dropdownY - 2 && 
+                                       e.canvasY <= this.pos[1] + dropdownY + dropdownHeight - 2;
+                    
+                    if (isInDropdown) {
+                        this.showTooltip = true;
+                        this.tooltipText = this.properties.value || "";
+                        // Store the mouse event for later use
+                        this.lastMouseEvent = e;
+                    } else {
+                        this.showTooltip = false;
+                    }
+                    
+                    return false;
+                };
+
+                // Mouse leave handler
+                this.onMouseLeave = function(e) {
+                    this.showTooltip = false;
+                    if (this.tooltipElement) {
+                        this.tooltipElement.style.display = 'none';
+                    }
+                    return false;
+                };
+
+                // Cleanup tooltip when node is removed
+                this.onRemoved = function() {
+                    if (this.tooltipElement) {
+                        this.tooltipElement.remove();
+                        this.tooltipElement = null;
+                    }
+                };
+
                 // Simple function to set specific combo options
                 this.setComboOptions = function(options) {
                     this.properties.options = [...options];
@@ -192,6 +238,10 @@ app.registerExtension({
                     }
                     return true;
                 };
+
+                // Tooltip state
+                this.showTooltip = false;
+                this.tooltipText = "";
                 
                 // Add the double-click handler for renaming like other CRZ nodes
                 const originalOnDblClick = this.onDblClick;
@@ -227,6 +277,8 @@ app.registerExtension({
                 if (this.size[1] > LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER) {
                     this.size[1] = LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER;
                 }
+
+                // Tooltip removed - was causing too many issues
                 
                 const fontsize = LiteGraph.NODE_SUBTEXT_SIZE;
                 const shX = (this.slot_start_y || 0) + fontsize * 1.5;
@@ -279,11 +331,63 @@ app.registerExtension({
                 }
                 ctx.fillText(truncatedValue, dropdownLeft + DROPDOWN_WIDTH/2, shX + 3 + COMBO_TEXT_OFFSET);
                 
+                // Draw tooltip using same method as preferences dialog
+                if (this.showTooltip && this.tooltipText) {
+                    if (!this.tooltipElement) {
+                        this.tooltipElement = document.createElement("div");
+                        this.tooltipElement.style.cssText = `
+                            position: fixed;
+                            background: rgba(24, 24, 24, 0.95);
+                            color: #868686;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 16px;
+                            pointer-events: none;
+                            z-index: 10000;
+                            border: 1px solid rgba(41, 41, 41, 0.9);
+                            white-space: nowrap;
+                        `;
+                        document.body.appendChild(this.tooltipElement);
+                    }
+                    
+                    // Position tooltip above dropdown - try multiple canvas detection methods
+                    let canvas = null;
+                    if (this.graph && this.graph.canvas) {
+                        canvas = this.graph.canvas.canvas || this.graph.canvas;
+                    }
+                    if (!canvas && this.graph && this.graph.constructor && this.graph.constructor.canvas) {
+                        canvas = this.graph.constructor.canvas;
+                    }
+                    if (!canvas && app && app.canvas) {
+                        canvas = app.canvas.canvas || app.canvas;
+                    }
+                    
+                    // Get screen coordinates from the stored mouse event
+                    let screenX = 0;
+                    let screenY = 0;
+                    
+                    if (this.lastMouseEvent) {
+                        // Try to get client coordinates from the original event
+                        const originalEvent = this.lastMouseEvent.originalEvent || this.lastMouseEvent;
+                        screenX = originalEvent.clientX || 0;
+                        screenY = originalEvent.clientY || 0;
+                    }
+                    
+                    this.tooltipElement.textContent = this.tooltipText;
+                    this.tooltipElement.style.left = (screenX - this.tooltipElement.offsetWidth/2) + 'px';
+                    this.tooltipElement.style.top = (screenY - 60) + 'px';
+                    this.tooltipElement.style.display = 'block';
+                } else if (this.tooltipElement) {
+                    this.tooltipElement.style.display = 'none';
+                }
+                
                 ctx.restore();
             };
             
             // Set compute size function to match other CRZ nodes
             nodeType.prototype.computeSize = () => [NODE_WIDTH-100, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
+
+            // Simple tooltip using browser's built-in title attribute
         }
     }
 });

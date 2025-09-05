@@ -181,6 +181,27 @@ class CRZDashboardNode {
             }
         };
 
+        // Tooltip state
+        this.node.showTooltip = false;
+        this.node.tooltipText = "";
+
+        // Mouse leave handler
+        this.node.onMouseLeave = function(e) {
+            this.showTooltip = false;
+            if (this.tooltipElement) {
+                this.tooltipElement.style.display = 'none';
+            }
+            return false;
+        };
+
+        // Cleanup tooltip when node is removed
+        this.node.onRemoved = function() {
+            if (this.tooltipElement) {
+                this.tooltipElement.remove();
+                this.tooltipElement = null;
+            }
+        };
+
         // Mouse event handlers
         this.node.onMouseDown = function(e) {
             if (e.canvasY - this.pos[1] < 0) return false;
@@ -275,7 +296,42 @@ class CRZDashboardNode {
         };
 
         this.node.onMouseMove = function(e, pos, canvas) {
-            if (!this.capture) return;
+            // Handle tooltip logic when not capturing
+            if (!this.capture) {
+                if (e.canvasY - this.pos[1] < 0) return false;
+                
+                const sliderType = this.properties.slider_type ?? "FLOAT";
+                const sliderY = NODE_PADDING;
+                const trackLeft = this.size[0] - TRACK_RIGHT_PADDING;
+                
+                if (sliderType === "COMBO") {
+                    // COMBO DROPDOWN TOOLTIP LOGIC
+                    const dropdownWidth = TRACK_WIDTH + 45;
+                    const dropdownLeft = trackLeft;
+                    const dropdownY = sliderY + TRACK_VERTICAL_OFFSET - 8;
+                    const dropdownHeight = 16;
+                    
+                    const isInDropdown = e.canvasX >= this.pos[0] + dropdownLeft && 
+                                       e.canvasX <= this.pos[0] + dropdownLeft + dropdownWidth &&
+                                       e.canvasY >= this.pos[1] + dropdownY && 
+                                       e.canvasY <= this.pos[1] + dropdownY + dropdownHeight;
+                    
+                    if (isInDropdown) {
+                        this.showTooltip = true;
+                        this.tooltipText = this.properties.slider_value || "";
+                        // Store the mouse event for later use
+                        this.lastMouseEvent = e;
+                    } else {
+                        this.showTooltip = false;
+                    }
+                } else {
+                    this.showTooltip = false;
+                }
+                
+                return false;
+            }
+            
+            // Handle slider dragging when capturing
             if (canvas.pointer.isDown === false) { this.onMouseUp(e); return; }
             this.valueUpdate(e);
         };
@@ -673,6 +729,44 @@ app.registerExtension({
                         truncatedValue = selectedValue.substring(0, 8) + "..";
                     }
                     ctx.fillText(truncatedValue, dropdownLeft + dropdownWidth/2, sliderY + 14);
+                    
+                    // Draw tooltip using same method as other CRZ nodes
+                    if (this.showTooltip && this.tooltipText) {
+                        if (!this.tooltipElement) {
+                            this.tooltipElement = document.createElement("div");
+                            this.tooltipElement.style.cssText = `
+                                position: fixed;
+                                background: rgba(24, 24, 24, 0.95);
+                                color: #868686;
+                                padding: 4px 8px;
+                                border-radius: 4px;
+                                font-size: 16px;
+                                pointer-events: none;
+                                z-index: 10000;
+                                border: 1px solid rgba(41, 41, 41, 0.9);
+                                white-space: nowrap;
+                            `;
+                            document.body.appendChild(this.tooltipElement);
+                        }
+                        
+                        // Get screen coordinates from the stored mouse event
+                        let screenX = 0;
+                        let screenY = 0;
+                        
+                        if (this.lastMouseEvent) {
+                            // Try to get client coordinates from the original event
+                            const originalEvent = this.lastMouseEvent.originalEvent || this.lastMouseEvent;
+                            screenX = originalEvent.clientX || 0;
+                            screenY = originalEvent.clientY || 0;
+                        }
+                        
+                        this.tooltipElement.textContent = this.tooltipText;
+                        this.tooltipElement.style.left = (screenX - this.tooltipElement.offsetWidth/2) + 'px';
+                        this.tooltipElement.style.top = (screenY - 60) + 'px';
+                        this.tooltipElement.style.display = 'block';
+                    } else if (this.tooltipElement) {
+                        this.tooltipElement.style.display = 'none';
+                    }
                     
                 } else if (type === "BOOLEAN") {
                     // BOOLEAN TOGGLE DRAWING WITH ANIMATION (expanded, no text)
