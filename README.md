@@ -25,13 +25,13 @@ All nodes can be found easily by searching for `crz`
 - Dropdown
 - Custom Dropdown (user defined)
 - Compare
-- Switch
 - Image Selector 
 - Dashboard Node (experimental, see note down the bottom of page)
 - Compact int-to-float / float-to-int
 - Passthrough
-- Execute Block
+- Switch
 - Execute Switch
+- Execute Block
 <img width="1173" height="1139" alt="image" src="https://github.com/user-attachments/assets/ae527f6e-a4c1-4b36-a65b-ebd4c437288b" />
 
 
