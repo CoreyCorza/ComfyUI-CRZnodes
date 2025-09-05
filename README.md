@@ -1,6 +1,12 @@
 # Noteable Changes
+## 5th Sept 2025  
+
 If text display is truncated on a node, a tooltip will appear now on hover showing the full text
 ![brave_MyyMf8NVaT](https://github.com/user-attachments/assets/45c4269e-67c2-472d-973d-4a9a59052587)
+
+Keyboard shortcuts integrated into comfyui. Search for `crz`
+<img width="1157" height="954" alt="brave_wukdUzz8hF" src="https://github.com/user-attachments/assets/30cfd658-6d91-488c-8c01-2f284d1709ec" />
+
 
 
 # Installation  
