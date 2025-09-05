@@ -105,7 +105,7 @@ class CRZIntegerSlider
             ctx.textAlign = "left";
             ctx.fillText(this.properties.label || "Integer Slider", LABEL_LEFT_PADDING, shX);
 
-            // Draw slider track positioned on the right side like Dashboard
+            // Draw slider track positioned on the right side 
             const trackLeft = this.size[0] - TRACK_RIGHT_PADDING;
             
             ctx.fillStyle = TRACK_COLOR;
@@ -281,7 +281,7 @@ app.registerExtension(
     {
         if (nodeData.name === "CRZIntegerSlider")
         {
-            // Hide the title bar like Dashboard
+            // Hide the title bar 
             nodeType.title_mode = LiteGraph.NO_TITLE;
             nodeType.prototype.getTitle = function() { return ""; };
             nodeType.prototype.onDrawTitle = function() { return false; };

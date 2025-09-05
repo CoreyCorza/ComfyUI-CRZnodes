@@ -25,7 +25,7 @@ app.registerExtension({
                 // Mark as CRZ node for connection hiding
                 this.isCRZNode = true;
                 
-                // Hide input/output labels like other CRZ nodes
+                // Hide input/output labels 
                 if (this.inputs && this.inputs[0]) {
                     this.inputs[0].localized_name = " ";
                     this.inputs[0].color_off = "rgba(38, 78, 116, 1)";
@@ -40,7 +40,7 @@ app.registerExtension({
                 return r;
             };
 
-            // Override onDrawBackground like mxtoolkit does
+            // Override onDrawBackground 
             nodeType.prototype.onDrawBackground = function(ctx) {
                 // Keep sockets visible - don't make them transparent
                 // Just draw the connection line

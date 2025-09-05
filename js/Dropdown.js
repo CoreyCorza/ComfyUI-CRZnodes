@@ -22,7 +22,7 @@ app.registerExtension({
     name: "CRZDropdown",
     async beforeRegisterNodeDef(nodeType, nodeData, app) {
         if (nodeData.name === "CRZDropdown") {
-            // Hide the title bar like other CRZ nodes
+            // Hide the title bar 
             nodeType.title_mode = LiteGraph.NO_TITLE;
             nodeType.prototype.getTitle = function() { return ""; };
             nodeType.prototype.onDrawTitle = function() { return false; };
@@ -36,25 +36,25 @@ app.registerExtension({
                     onNodeCreated.apply(this, arguments);
                 }
                 
-                // Set background color like other CRZ nodes
+                // Set background color 
                 this.bgcolor = NODE_BACKGROUND_COLOR;
                 
                 // Mark this as a CRZ node for connection hiding
                 this.isCRZNode = true;
                 
-                // Initialize properties like other CRZ nodes
+                // Initialize properties 
                 this.properties = this.properties || {};
                 this.properties.label = this.properties.label || "Dropdown";
                 this.properties.value = this.properties.value || "";
                 this.properties.options = this.properties.options || [""];
                 
-                // Set consistent height like other CRZ nodes
+                // Set consistent height 
                 this.size = [NODE_WIDTH, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
                 
-                // Move widgets off-screen like FloatSlider (same technique)
+                // Move widgets off-screen like FloatSlider 
                 this.widgets_start_y = -2.4e8*LiteGraph.NODE_SLOT_HEIGHT;
                 
-                // Hide the default widget like other CRZ nodes do
+                // Hide the default widget 
                 if (this.widgets && this.widgets[0]) {
                     this.widgets[0].hidden = true;
                     this.widgets[0].type = "hidden";
@@ -63,7 +63,7 @@ app.registerExtension({
                 // Store reference to the value widget for syncing
                 this.valueWidget = this.widgets?.find(w => w.name === "value");
                 
-                // Clear output socket label like other CRZ nodes
+                // Clear output socket label 
                 this.onAdded = function() {
                     if (this.outputs && this.outputs[0]) {
                         this.outputs[0].name = this.outputs[0].localized_name = "";
@@ -208,7 +208,7 @@ app.registerExtension({
                     }, 200);
                 };
                 
-                // Property change handler like other CRZ nodes
+                // Property change handler 
                 this.onPropertyChanged = function(propName) {
                     if (propName === "value" && this.valueWidget) {
                         this.valueWidget.value = this.properties.value;
@@ -243,7 +243,7 @@ app.registerExtension({
                 this.showTooltip = false;
                 this.tooltipText = "";
                 
-                // Add the double-click handler for renaming like other CRZ nodes
+                // Add the double-click handler for renaming 
                 const originalOnDblClick = this.onDblClick;
                 this.onDblClick = function(e, pos, canvas) {
                     // Double-click on label area to rename
@@ -269,17 +269,15 @@ app.registerExtension({
                 };
             };
             
-            // Add drawing functionality like other CRZ nodes
+            // Add drawing functionality
             nodeType.prototype.onDrawForeground = function(ctx) {
                 if (this.flags.collapsed) return;
                 
-                // Height snapping like other CRZ slider nodes - prevent vertical resize
+                // Height snapping - prevent vertical resize
                 if (this.size[1] > LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER) {
                     this.size[1] = LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER;
                 }
 
-                // Tooltip removed - was causing too many issues
-                
                 const fontsize = LiteGraph.NODE_SUBTEXT_SIZE;
                 const shX = (this.slot_start_y || 0) + fontsize * 1.5;
                 
@@ -293,7 +291,7 @@ app.registerExtension({
                 const labelColor = isActive ? LABEL_COLOR : INACTIVE_LABEL_COLOR;
                 const valueColor = isActive ? VALUE_COLOR : INACTIVE_VALUE_COLOR;
                 
-                // Draw the label like other CRZ nodes
+                // Draw the label
                 ctx.save();
                 ctx.fillStyle = labelColor;
                 ctx.font = fontsize + "px Arial";
@@ -311,13 +309,6 @@ app.registerExtension({
                 ctx.beginPath();
                 ctx.roundRect(dropdownLeft, dropdownY - 2, DROPDOWN_WIDTH, dropdownHeight, cornerRadius);
                 ctx.fill();
-                
-                // Draw rounded dropdown border
-                // ctx.strokeStyle = DROPDOWN_BORDER_COLOR;
-                // ctx.lineWidth = 1;
-                // ctx.beginPath();
-                // ctx.roundRect(dropdownLeft, dropdownY - 2, DROPDOWN_WIDTH, dropdownHeight, cornerRadius);
-                // ctx.stroke();
                 
                 // Draw current value
                 ctx.fillStyle = valueColor;
@@ -386,8 +377,6 @@ app.registerExtension({
             
             // Set compute size function to match other CRZ nodes
             nodeType.prototype.computeSize = () => [NODE_WIDTH-100, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
-
-            // Simple tooltip using browser's built-in title attribute
         }
     }
 });

@@ -594,16 +594,13 @@ app.registerExtension({
             nodeType.title_mode = LiteGraph.NO_TITLE;
             nodeType.prototype.getTitle = function() { return ""; };
             nodeType.prototype.onDrawTitle = function() { return false; };
-            
-            // Set minimum size (explicit width to match Dashboard Multi)
-            // nodeType.min_size = [250, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
-            
+
             const onNodeCreated = nodeType.prototype.onNodeCreated;
             nodeType.prototype.onNodeCreated = function () {
                 onNodeCreated?.apply(this, arguments);
                 this.bgcolor = NODE_BACKGROUND_COLOR;
                 
-                // Initialize and hide the widget like other CRZ nodes
+                // Initialize and hide the widget 
                 if (this.widgets && this.widgets[0]) {
                     // Set initial value from properties
                     this.widgets[0].value = this.properties.slider_value || 0.0;
@@ -620,7 +617,7 @@ app.registerExtension({
                     }
                 }
                 
-                // Simple hiding like Dashboard Multi
+                // Simple hiding 
                 this.onAdded = function() {
                     this.outputs[0].name = this.outputs[0].localized_name = "";
                     this.widgets_start_y = -2.4e8*LiteGraph.NODE_SLOT_HEIGHT;
@@ -639,10 +636,7 @@ app.registerExtension({
                     this.crzDashboardNode.booleanTargetProgress = this.crzDashboardNode.booleanAnimationProgress;
                     this.crzDashboardNode.isBooleanAnimating = false;
                 }
-                
-                // Set explicit size to match Dashboard Multi
-                // this.size = [250, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
-                
+
                 // Mark as CRZ node for connection hiding
                 this.isCRZNode = true;
             };
@@ -653,7 +647,7 @@ app.registerExtension({
             nodeType.prototype.onDrawForeground = function(ctx) {
                 if (this.flags.collapsed || !this.crzDashboardNode) return;
                 
-                // Height snapping like other CRZ slider nodes - prevent vertical resize
+                // Height snapping - prevent vertical resize
                 if (this.size[1] > LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER) {
                     this.size[1] = LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER;
                 }
@@ -919,7 +913,7 @@ app.registerExtension({
                     }
                 }
                 
-                // Double-click on slider track area to configure (like FloatSlider/IntegerSlider)
+                // Double-click on slider track area to configure 
                 if (currentType === "FLOAT" || currentType === "INT") {
                     const trackLeft = this.pos[0] + this.size[0] - TRACK_RIGHT_PADDING;
                     const trackWidth = TRACK_WIDTH;

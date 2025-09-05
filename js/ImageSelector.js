@@ -58,7 +58,7 @@ app.registerExtension({
                 this.properties.image_5 = "";
                 this.properties.image_6 = "";
                 
-                // Move widgets off-screen like FloatSlider (same technique)
+                // Move widgets off-screen 
                 this.widgets_start_y = -2.4e8*LiteGraph.NODE_SLOT_HEIGHT;
                 
                 // Hide all widgets completely

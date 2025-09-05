@@ -42,7 +42,7 @@ app.registerExtension({
                 this.size = [BLOCK_WIDTH, BLOCK_HEIGHT];
                 this.resizable = false;
                 
-                // Hide the boolean widget while keeping the socket functional (like Switch node)
+                // Hide the boolean widget while keeping the socket functional 
                 if (this.widgets && this.widgets[0]) {
                     this.widgets[0].hidden = true;
                 }
@@ -102,11 +102,11 @@ app.registerExtension({
                 const isActive = (inputConnected && boolConnected) || outputConnected;
                 const labelColor = isActive ? LABEL_COLOR : INACTIVE_LABEL_COLOR;
                 
-                // Get the boolean value (like Compare node)
+                // Get the boolean value 
                 let blockState = false;
                 
                 if (boolConnected) {
-                    // If connected, try to get from connected source (like Compare node)
+                    // If connected, try to get from connected source 
                     try {
                         const boolLink = this.graph.links[this.inputs[1].link];
                         if (boolLink) {

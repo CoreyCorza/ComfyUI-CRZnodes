@@ -1,5 +1,5 @@
 // CRZ Global Stylesheet
-// Todo: Ugghh.. Actually use these across all nodes consistently
+// TODO: Ugghh.. Actually use these across all nodes consistently
 
 // === NODE SIZING ===
 export const NODE_WIDTH = 300;

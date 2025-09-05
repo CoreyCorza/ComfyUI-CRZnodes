@@ -14,14 +14,12 @@ app.registerExtension({
             nodeType.prototype.onNodeCreated = function () {
                 const r = onNodeCreated ? onNodeCreated.apply(this, arguments) : undefined;
                 
-                // Set transparent background
-                // this.bgcolor = "transparent";
                 this.bgcolor = "rgba(24, 24, 24, 0.281)";
                 
                 this.size = [80, 28];
                 this.resizable = true;
                 
-                // Hide input/output labels like other CRZ nodes
+                // Hide input/output labels 
                 if (this.inputs && this.inputs[0]) {
                     this.inputs[0].localized_name = " ";
                     this.inputs[0].color_on = "rgba(135, 56, 199, 1)";

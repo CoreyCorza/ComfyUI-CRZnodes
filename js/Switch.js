@@ -59,7 +59,8 @@ app.registerExtension({
                     if (boolConnected && this.graph && this.graph.setDirtyCanvas) {
                         this.graph.setDirtyCanvas(true);
                     }
-                }, 100); // Update every 100ms when connected
+                }, 100); // Update every 100ms when connected, probably not a good idea
+                // TODO: Figure something else out
                 
                 // Cleanup interval when node is removed
                 this.onRemoved = function() {
@@ -208,28 +209,6 @@ app.registerExtension({
                     this.inputs[1].color_off = !switchValue ? "#95fd80" : "rgba(90, 90, 90, 1)";
                 }
                 
-                // // Draw input labels with dynamic colors
-                // if (this.inputs && this.inputs.length >= 2) {
-                //     // True input label (first socket)
-                //     const trueActive = switchValue;
-                //     const trueLabelColor = trueActive ? "#CCCCCC" : "#585858";
-                //     const trueLabelX = 18;
-                //     const trueLabelY = LiteGraph.NODE_SLOT_HEIGHT * 0.5 + 9;
-                    
-                //     ctx.fillStyle = trueLabelColor;
-                //     ctx.font = "12px Arial";
-                //     ctx.textAlign = "left";
-                //     ctx.fillText("True", trueLabelX, trueLabelY);
-                    
-                //     // False input label (second socket)
-                //     const falseActive = !switchValue;
-                //     const falseLabelColor = falseActive ? "#CCCCCC" : "#585858";
-                //     const falseLabelX = 18;
-                //     const falseLabelY = LiteGraph.NODE_SLOT_HEIGHT * 1.5 + 9;
-                    
-                //     ctx.fillStyle = falseLabelColor;
-                //     ctx.fillText("False", falseLabelX, falseLabelY);
-                // }
                 
                 // Draw S-curve connection from active input to output
                 if (this.inputs && this.inputs.length >= 2 && this.outputs && this.outputs[0]) {

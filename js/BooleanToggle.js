@@ -262,7 +262,7 @@ app.registerExtension(
     {
         if (nodeData.name === "CRZBooleanToggle")
         {
-            // Hide the title bar like Dashboard
+            // Hide the title 
             nodeType.title_mode = LiteGraph.NO_TITLE;
             nodeType.prototype.getTitle = function() { return ""; };
             nodeType.prototype.onDrawTitle = function() { return false; };

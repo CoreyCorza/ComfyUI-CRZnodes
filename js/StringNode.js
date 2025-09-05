@@ -28,7 +28,7 @@ class CRZStringNode {
         this.node.properties.text_value = this.node.properties.text_value ?? "";
         this.node.properties.text_name = this.node.properties.text_name ?? "String";
 
-        // Define layout constants in constructor scope (like BooleanToggle)
+        // Define layout constants in constructor scope 
         this.node.size = [NODE_WIDTH, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
         const fontsize = LiteGraph.NODE_SUBTEXT_SIZE;
         const shX = (this.node.slot_start_y || 0) + fontsize * 1.5;
@@ -171,7 +171,7 @@ app.registerExtension({
                 onNodeCreated?.apply(this, arguments);
                 this.bgcolor = NODE_BACKGROUND_COLOR;
                 
-                // Initialize and hide the widget like other CRZ nodes
+                // Initialize and hide the widget 
                 if (this.widgets && this.widgets[0]) {
                     this.widgets[0].value = this.properties.text_value || "";
                     this.widgets[0].hidden = true;
@@ -215,7 +215,7 @@ app.registerExtension({
             nodeType.prototype.onDrawForeground = function(ctx) {
                 if (this.flags.collapsed || !this.crzStringNode) return;
                 
-                // Height snapping like other CRZ slider nodes - prevent vertical resize
+                // Height snapping - prevent vertical resize
                 if (this.size[1] > LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER) {
                     this.size[1] = LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER;
                 }

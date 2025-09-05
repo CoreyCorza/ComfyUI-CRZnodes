@@ -6,10 +6,6 @@ import {
     INACTIVE_LABEL_COLOR,
     VALUE_COLOR,
     INACTIVE_VALUE_COLOR,
-    TOGGLE_ACTIVE_COLOR,
-    TOGGLE_INACTIVE_COLOR,
-    HANDLE_COLOR,
-    TOGGLE_WIDTH,
     TOGGLE_HEIGHT,
     TOGGLE_CORNER_RADIUS,
     HANDLE_SIZE,
@@ -25,7 +21,7 @@ app.registerExtension({
     name: "CRZCompare",
     async beforeRegisterNodeDef(nodeType, nodeData, app) {
         if (nodeData.name === "CRZCompare") {
-            // Hide the title bar like other CRZ nodes
+            // Hide the title bar 
             nodeType.title_mode = LiteGraph.NO_TITLE;
             nodeType.prototype.getTitle = function() { return ""; };
             nodeType.prototype.onDrawTitle = function() { return false; };
@@ -39,7 +35,7 @@ app.registerExtension({
                     onNodeCreated.apply(this, arguments);
                 }
                 
-                // Set background color like other CRZ nodes
+                // Set background color 
                 this.bgcolor = NODE_BACKGROUND_COLOR;
                 
                 // Set fixed size and disable resizing
@@ -87,7 +83,7 @@ app.registerExtension({
                         this.outputs[0].name = this.outputs[0].localized_name = "";
                     }
                     
-                    // Move widgets off-screen like other CRZ nodes
+                    // Move widgets off-screen 
                     this.widgets_start_y = -2.4e8 * LiteGraph.NODE_SLOT_HEIGHT;
                 };
                 
