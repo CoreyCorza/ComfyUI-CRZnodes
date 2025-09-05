@@ -32,7 +32,8 @@ All nodes can be found easily by searching for `crz`
 - Switch
 - Execute Switch
 - Execute Block
-<img width="1173" height="1139" alt="image" src="https://github.com/user-attachments/assets/ae527f6e-a4c1-4b36-a65b-ebd4c437288b" />
+<img width="1010" height="1209" alt="image" src="https://github.com/user-attachments/assets/b4015cf8-e8f1-40e5-83cd-b37555d94941" />
+
 
 
 
