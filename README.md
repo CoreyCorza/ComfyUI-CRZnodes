@@ -1,3 +1,8 @@
+# Noteable Changes
+If text display is truncated on a node, a tooltip will appear now on hover showing the full text
+![brave_MyyMf8NVaT](https://github.com/user-attachments/assets/45c4269e-67c2-472d-973d-4a9a59052587)
+
+
 # Installation  
 git clone like you normally do to the `custom_nodes` folder:  
 `git clone https://github.com/CoreyCorza/ComfyUI-CRZnodes.git`  
