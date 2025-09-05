@@ -52,7 +52,7 @@ Currently supports strings, ints and floats
 <img width="1351" height="441" alt="brave_Lrfz41D0Jp" src="https://github.com/user-attachments/assets/f0675d2b-7e9e-4aa2-b6a5-f95d15d8fa57" />
 <img width="714" height="305" alt="brave_io7CVTrxIc" src="https://github.com/user-attachments/assets/c8dd8b19-e9a9-4846-8005-535934c7608d" />
 
-To give these nodes custom labels, double click on the text
+To give nodes custom labels, double click on the text
 <img width="1016" height="370" alt="image" src="https://github.com/user-attachments/assets/977c6554-e502-4547-a10e-d52ed125130b" />
 
 #### Compare
