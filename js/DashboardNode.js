@@ -184,6 +184,7 @@ class CRZDashboardNode {
         // Tooltip state
         this.node.showTooltip = false;
         this.node.tooltipText = "";
+        this.node.isTruncated = false;
 
         // Mouse leave handler
         this.node.onMouseLeave = function(e) {
@@ -324,7 +325,8 @@ class CRZDashboardNode {
                                        e.canvasY <= this.pos[1] + dropdownY + dropdownHeight;
                     
                     if (isInDropdown) {
-                        this.showTooltip = true;
+                        // Only show tooltip if text is actually truncated
+                        this.showTooltip = this.isTruncated;
                         this.tooltipText = this.properties.slider_value || "";
                         // Store the mouse event for later use
                         this.lastMouseEvent = e;
@@ -726,7 +728,10 @@ app.registerExtension({
                     ctx.textAlign = "center";
                     const maxWidth = dropdownWidth - 20;
                     let truncatedValue = selectedValue;
-                    if (ctx.measureText(selectedValue).width > maxWidth) {
+                    
+                    // Check if text is truncated and store the state
+                    this.isTruncated = ctx.measureText(selectedValue).width > maxWidth;
+                    if (this.isTruncated) {
                         truncatedValue = selectedValue.substring(0, 8) + "..";
                     }
                     ctx.fillText(truncatedValue, dropdownLeft + dropdownWidth/2, sliderY + 14);

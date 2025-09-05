@@ -56,6 +56,7 @@ class CRZCustomDropdown {
         // Tooltip state
         this.node.showTooltip = false;
         this.node.tooltipText = "";
+        this.node.isTruncated = false;
 
         // Mouse move handler for tooltip
         this.node.onMouseMove = function(e) {
@@ -73,7 +74,8 @@ class CRZCustomDropdown {
                                e.canvasY <= this.pos[1] + dropdownY + dropdownHeight;
             
             if (isInDropdown) {
-                this.showTooltip = true;
+                // Only show tooltip if text is actually truncated
+                this.showTooltip = this.isTruncated;
                 this.tooltipText = this.properties.dropdown_value || "";
                 // Store the mouse event for later use
                 this.lastMouseEvent = e;
@@ -349,21 +351,17 @@ app.registerExtension({
                 ctx.beginPath();
                 ctx.roundRect(dropdownLeft, dropdownY, dropdownWidth, dropdownHeight, cornerRadius);
                 ctx.fill();
-                
-                // Draw rounded dropdown border
-                // ctx.strokeStyle = isActive ? "#555" : "#333";
-                // ctx.lineWidth = 0;
-                // ctx.beginPath();
-                // ctx.roundRect(dropdownLeft, dropdownY, dropdownWidth, dropdownHeight, cornerRadius);
-                // ctx.stroke();
-                
+                                
                 // Draw current value (centered in dropdown)
                 ctx.fillStyle = valueColor;
                 ctx.font = LiteGraph.NODE_SUBTEXT_SIZE + "px Arial";
                 ctx.textAlign = "center";
                 const maxWidth = dropdownWidth - 20;
                 let truncatedValue = String(selectedValue);
-                if (ctx.measureText(truncatedValue).width > maxWidth) {
+                
+                // Check if text is truncated and store the state
+                this.isTruncated = ctx.measureText(truncatedValue).width > maxWidth;
+                if (this.isTruncated) {
                     truncatedValue = truncatedValue.substring(0, 8) + "..";
                 }
                 ctx.fillText(truncatedValue, dropdownLeft + dropdownWidth/2, sliderY + 14);

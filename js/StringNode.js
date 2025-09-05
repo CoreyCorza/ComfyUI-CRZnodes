@@ -72,6 +72,7 @@ class CRZStringNode {
         // Tooltip state
         this.node.showTooltip = false;
         this.node.tooltipText = "";
+        this.node.isTruncated = false;
 
         // Mouse move handler for tooltip
         this.node.onMouseMove = function(e) {
@@ -88,7 +89,8 @@ class CRZStringNode {
                                e.canvasY <= this.pos[1] + textAreaY + textAreaHeight;
             
             if (isInTextArea) {
-                this.showTooltip = true;
+                // Only show tooltip if text is actually truncated
+                this.showTooltip = this.isTruncated;
                 this.tooltipText = this.properties.text_value || "";
                 // Store the mouse event for later use
                 this.lastMouseEvent = e;
@@ -274,7 +276,10 @@ app.registerExtension({
                 ctx.textAlign = "center";
                 const maxWidth = textAreaWidth - 20;
                 let truncatedValue = textValue || "\"\"";
-                if (ctx.measureText(truncatedValue).width > maxWidth) {
+                
+                // Check if text is truncated and store the state
+                this.isTruncated = ctx.measureText(truncatedValue).width > maxWidth;
+                if (this.isTruncated) {
                     truncatedValue = truncatedValue.substring(0, 12) + "..";
                 }
                 ctx.fillText(truncatedValue, textAreaLeft + textAreaWidth/2, stringY + 14);

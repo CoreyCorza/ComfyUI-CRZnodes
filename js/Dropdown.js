@@ -73,6 +73,7 @@ app.registerExtension({
                 // Tooltip state
                 this.showTooltip = false;
                 this.tooltipText = "";
+                this.isTruncated = false;
 
                 // Mouse move handler for tooltip
                 this.onMouseMove = function(e) {
@@ -88,7 +89,8 @@ app.registerExtension({
                                        e.canvasY <= this.pos[1] + dropdownY + dropdownHeight - 2;
                     
                     if (isInDropdown) {
-                        this.showTooltip = true;
+                        // Only show tooltip if text is actually truncated
+                        this.showTooltip = this.isTruncated;
                         this.tooltipText = this.properties.value || "";
                         // Store the mouse event for later use
                         this.lastMouseEvent = e;
@@ -324,7 +326,10 @@ app.registerExtension({
                 const displayValue = this.properties.value || "";
                 const maxWidth = DROPDOWN_WIDTH - 20;
                 let truncatedValue = displayValue;
-                if (ctx.measureText(displayValue).width > maxWidth) {
+                
+                // Check if text is truncated and store the state
+                this.isTruncated = ctx.measureText(displayValue).width > maxWidth;
+                if (this.isTruncated) {
                     truncatedValue = displayValue.substring(0, 16) + "..";
                 }
                 ctx.fillText(truncatedValue, dropdownLeft + DROPDOWN_WIDTH/2, shX + 3 + COMBO_TEXT_OFFSET);

@@ -7,7 +7,7 @@ import {
 
 // Switch node dimensions
 const SWITCH_WIDTH = 80;
-const SWITCH_HEIGHT = 70;
+const SWITCH_HEIGHT = 60;
 
 app.registerExtension({
     name: "CRZSwitch",
@@ -29,11 +29,12 @@ app.registerExtension({
                 
                 // Set fixed size and disable resizing
                 this.size = [SWITCH_WIDTH, SWITCH_HEIGHT];
-                this.resizable = false;
+                this.resizable = true;
                 
                 // Hide the boolean widget while keeping it functional
                 if (this.widgets && this.widgets[0]) {
                     this.widgets[0].hidden = true;
+                    this.widgets_start_y = 44;
                 }
                 
                 // Mark as CRZ node for connection hiding
