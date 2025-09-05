@@ -39,7 +39,7 @@ import {
     HANDLE_BORDER_ACTIVE,
     HANDLE_BORDER_INACTIVE,
     DROPDOWN_BG_COLOR,
-    DROPDOWN_BG_COLOR_INACTIVE
+    DROPDOWN_BG_COLOR_INACTIVE,
 } from "./CRZConfig.js";
 
 // Layout constants
@@ -592,9 +592,7 @@ app.registerExtension({
             };
 
             // Force the node to use explicit width - min
-            nodeType.prototype.computeSize = function() {
-                return [250, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
-            };
+            nodeType.prototype.computeSize = () => [NODE_WIDTH-100, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
 
             nodeType.prototype.onDrawForeground = function(ctx) {
                 if (this.flags.collapsed || !this.crzDashboardNode) return;

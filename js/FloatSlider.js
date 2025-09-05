@@ -300,7 +300,7 @@ class CRZFloatSlider
         }
 
         this.node.onSelected = function(e) { this.onMouseUp(e) }
-        this.node.computeSize = () => [NODE_WIDTH, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
+        this.node.computeSize = () => [NODE_WIDTH-100, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
     }
 }
 
