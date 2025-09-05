@@ -74,7 +74,7 @@ First input socket is True, second input socket is False.
 ![brave_JdJfFl2gK1](https://github.com/user-attachments/assets/2eeab7a4-e4ac-4e2a-b3ab-63c223ddda8d)
 
 #### Execute Switch
-Only runs downstream nodes of the active output.  
+Only runs downstream nodes for the active output.  
 First output socket is True, second output socket is False.
 ![brave_qn8I8NEnjL](https://github.com/user-attachments/assets/f63c2560-abbe-4145-8be6-0906c6e62a3e)
 
