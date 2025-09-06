@@ -85,9 +85,9 @@ Blocks downstream nodes from running.
 
 
 #### Mapping custom dropdowns to pass different data
-Using some compare nodes and switches, you can check what the user has selected in a custom dropdown and pass any data through.
-Here we pass through strings dog, cat, bird --> based on if the user selected option1, option2 or option3
-I'm trying to think of a way to turn this into one node for convenience.. would just be easier if one node could just do all of this.
+Using some compare nodes and switches, you can check what the user has selected in a custom dropdown and pass any data through.  
+Here we pass through strings dog, cat, bird --> based on if the user selected option1, option2 or option3.  
+I'm trying to think of a way to turn this into one node for convenience.. would just be easier if one node could just do all of this.  
 ![brave_GL8VgxEj3X](https://github.com/user-attachments/assets/33c4a8ca-fe6f-4ca3-b352-ea52c3af1ae9)
 
 
