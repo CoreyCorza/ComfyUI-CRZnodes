@@ -132,6 +132,7 @@ app.registerExtension({
                     const newPrefs = {
                         always_show_passthrough: passthroughCheckbox.checked,
                         always_show_dashboard_connections: dashboardCheckbox.checked,
+                        show_passthrough_on_hover: passthroughHoverCheckbox.checked,
                         always_show_floating_button: false // Always false since we're using sidebar now
                     };
                     localStorage.setItem("crz_preferences", JSON.stringify(newPrefs));
@@ -189,13 +190,33 @@ app.registerExtension({
                 dashboardContainer.appendChild(dashboardCheckbox);
                 dashboardContainer.appendChild(dashboardLabel);
                 
+                // Create passthrough hover setting
+                const passthroughHoverContainer = document.createElement('div');
+                passthroughHoverContainer.style.cssText = 'display: flex; align-items: center; gap: 8px;';
+                
+                const passthroughHoverCheckbox = document.createElement('input');
+                passthroughHoverCheckbox.type = 'checkbox';
+                passthroughHoverCheckbox.id = 'sidebar_passthrough_hover';
+                passthroughHoverCheckbox.checked = prefs.show_passthrough_on_hover !== false; // Default to true
+                passthroughHoverCheckbox.addEventListener('change', savePreferences);
+                
+                const passthroughHoverLabel = document.createElement('label');
+                passthroughHoverLabel.htmlFor = 'sidebar_passthrough_hover';
+                passthroughHoverLabel.textContent = 'Show passthrough connections on hover';
+                passthroughHoverLabel.style.cssText = 'color: #fff; cursor: pointer; user-select: none;';
+                
+                passthroughHoverContainer.appendChild(passthroughHoverCheckbox);
+                passthroughHoverContainer.appendChild(passthroughHoverLabel);
+                
                 // Create keyboard shortcuts info
                 const shortcutsInfo = document.createElement('div');
 
                 
                 // Assemble the UI
+                settingsContainer.appendChild(passthroughHoverContainer);
                 settingsContainer.appendChild(passthroughContainer);
                 settingsContainer.appendChild(dashboardContainer);
+                
                 
                 container.appendChild(header);
                 container.appendChild(settingsContainer);

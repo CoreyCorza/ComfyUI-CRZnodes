@@ -14,6 +14,7 @@ class CRZCustomDropdown:
             "required": {},
             "hidden": {
                 "dropdown": ("FLOAT", {"default": 0.0}),
+                "dropdown_options": ("STRING", {"default": "[]"}),
             }
         }
 
@@ -25,6 +26,7 @@ class CRZCustomDropdown:
     def main(self, **kwargs):
         # Get the value from kwargs (hidden widget or default)
         dropdown_value = kwargs.get('dropdown', 0.0)
+        dropdown_options = kwargs.get('dropdown_options', '[]')
         
         # Convert the value to appropriate type
         def smart_convert(value):

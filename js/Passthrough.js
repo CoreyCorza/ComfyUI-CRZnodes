@@ -140,10 +140,16 @@ app.registerExtension({
                 this.isHovered = true;
                 // --- BEGIN: CRZ Passthrough hover logic for show all links ---
                 if (this.isPassthrough) {
-                    window.CRZ_passthrough_hovered = true;
-                    window.CRZ_passthrough_show_all_links = window.CRZ_passthrough_hovered && (window.CRZ_ctrl_held || (e && e.ctrlKey));
-                    if (this.graph && this.graph.canvas) {
-                        this.graph.canvas.setDirty(true, true);
+                    // Check if hover feature is enabled
+                    const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
+                    const hoverEnabled = prefs.show_passthrough_on_hover !== false; // Default to true
+                    
+                    if (hoverEnabled) {
+                        window.CRZ_passthrough_hovered = true;
+                        window.CRZ_passthrough_show_all_links = window.CRZ_passthrough_hovered && (window.CRZ_ctrl_held || (e && e.ctrlKey));
+                        if (this.graph && this.graph.canvas) {
+                            this.graph.canvas.setDirty(true, true);
+                        }
                     }
                 }
                 // --- END: CRZ Passthrough hover logic ---
@@ -161,10 +167,16 @@ app.registerExtension({
                 this.isHovered = false;
                 // --- BEGIN: CRZ Passthrough hover logic for show all links ---
                 if (this.isPassthrough) {
-                    window.CRZ_passthrough_hovered = false;
-                    window.CRZ_passthrough_show_all_links = false;
-                    if (this.graph && this.graph.canvas) {
-                        this.graph.canvas.setDirty(true, true);
+                    // Check if hover feature is enabled
+                    const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
+                    const hoverEnabled = prefs.show_passthrough_on_hover !== false; // Default to true
+                    
+                    if (hoverEnabled) {
+                        window.CRZ_passthrough_hovered = false;
+                        window.CRZ_passthrough_show_all_links = false;
+                        if (this.graph && this.graph.canvas) {
+                            this.graph.canvas.setDirty(true, true);
+                        }
                     }
                 }
                 // --- END: CRZ Passthrough hover logic ---
@@ -368,14 +380,15 @@ app.registerExtension({
                     return result;
                 }
 
-                // Show if either passthrough node is hovered
-                if ((hasPassthroughOrigin && originNode.isHovered) ||
-                    (hasPassthroughTarget && targetNode.isHovered)) {
+                // Show if either passthrough node is hovered (and hover is enabled)
+                const hoverEnabled = prefs.show_passthrough_on_hover !== false; // Default to true
+                if (hoverEnabled && ((hasPassthroughOrigin && originNode.isHovered) ||
+                    (hasPassthroughTarget && targetNode.isHovered))) {
                     return originalRenderLink.call(this, ctx, a, b, link, skip_border, flow, color, start_dir, end_dir, num_sublinks);
                 }
 
-                // Show if either passthrough node is selected
-                if (this.selected_nodes) {
+                // Show if either passthrough node is selected (and hover/selection is enabled)
+                if (hoverEnabled && this.selected_nodes) {
                     if ((hasPassthroughOrigin && this.selected_nodes[originNode.id]) ||
                         (hasPassthroughTarget && this.selected_nodes[targetNode.id])) {
                         return originalRenderLink.call(this, ctx, a, b, link, skip_border, flow, color, start_dir, end_dir, num_sublinks);

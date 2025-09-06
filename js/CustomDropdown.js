@@ -51,6 +51,11 @@ class CRZCustomDropdown {
                     this.widgets[0].value = this.properties.dropdown_value;
                 }
             }
+            
+            // Update options widget
+            if (this.widgets && this.widgets[1]) {
+                this.widgets[1].value = JSON.stringify(this.properties.dropdown_options);
+            }
         };
 
         // Tooltip state
@@ -282,6 +287,17 @@ app.registerExtension({
                     if (this.widgets && this.widgets[0]) {
                         this.widgets[0].hidden = true;
                         this.widgets[0].type = "hidden";
+                    }
+                }
+                
+                // Add hidden widget for dropdown options
+                if (!this.widgets || this.widgets.length < 2) {
+                    this.addWidget("text", "dropdown_options", JSON.stringify(this.properties.dropdown_options), function(v) {
+                        // This widget is read-only, just for passing data to Python
+                    });
+                    if (this.widgets && this.widgets[1]) {
+                        this.widgets[1].hidden = true;
+                        this.widgets[1].type = "hidden";
                     }
                 }
                 

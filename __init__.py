@@ -18,6 +18,7 @@ from .label import NODE_CLASS_MAPPINGS as LabelMappings, NODE_DISPLAY_NAME_MAPPI
 from .execute_switch import NODE_CLASS_MAPPINGS as ExecuteSwitchMappings, NODE_DISPLAY_NAME_MAPPINGS as ExecuteSwitchDisplayMappings
 from .execute_block import NODE_CLASS_MAPPINGS as ExecuteBlockMappings, NODE_DISPLAY_NAME_MAPPINGS as ExecuteBlockDisplayMappings
 from .string_node import NODE_CLASS_MAPPINGS as StringNodeMappings, NODE_DISPLAY_NAME_MAPPINGS as StringNodeDisplayMappings
+from .map_dropdown import NODE_CLASS_MAPPINGS as MapDropdownMappings, NODE_DISPLAY_NAME_MAPPINGS as MapDropdownDisplayMappings
 from . import preferences
 
 
@@ -39,6 +40,7 @@ NODE_CLASS_MAPPINGS.update(LabelMappings)
 NODE_CLASS_MAPPINGS.update(ExecuteSwitchMappings)
 NODE_CLASS_MAPPINGS.update(ExecuteBlockMappings)
 NODE_CLASS_MAPPINGS.update(StringNodeMappings)
+NODE_CLASS_MAPPINGS.update(MapDropdownMappings)
 
 
 
@@ -59,6 +61,7 @@ NODE_DISPLAY_NAME_MAPPINGS.update(LabelDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(ExecuteSwitchDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(ExecuteBlockDisplayMappings)
 NODE_DISPLAY_NAME_MAPPINGS.update(StringNodeDisplayMappings)
+NODE_DISPLAY_NAME_MAPPINGS.update(MapDropdownDisplayMappings)
 
 
 
