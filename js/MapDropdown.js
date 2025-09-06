@@ -46,6 +46,13 @@ app.registerExtension({
                 if (this.outputs && this.outputs.length > 0) {
                     this.outputs[0].name = this.outputs[0].localized_name = "";
                 }
+                
+                // Restore connection after a short delay to ensure graph is fully loaded
+                if (this.savedConnectedDropdownId) {
+                    setTimeout(() => {
+                        this.restoreConnection();
+                    }, 100);
+                }
             };
 
             nodeType.prototype.onConfigure = function (info) {
@@ -133,11 +140,23 @@ app.registerExtension({
 
             // Method to update input sockets based on dropdown options
             nodeType.prototype.updateOutputSockets = function () {
-                // Remove existing option input sockets (keep the custom dropdown input)
+                // Get current option sockets
+                const currentOptionSockets = this.inputs.filter(input => input.name.startsWith('option_'));
+                
+                // Create a map of existing socket names for quick lookup
+                const existingSocketMap = {};
+                currentOptionSockets.forEach(socket => {
+                    existingSocketMap[socket.name] = socket;
+                });
+
+                // Remove sockets that are no longer needed
                 const inputsToRemove = [];
                 for (let i = 0; i < this.inputs.length; i++) {
                     if (this.inputs[i].name.startsWith('option_')) {
-                        inputsToRemove.push(i);
+                        const socketIndex = parseInt(this.inputs[i].name.split('_')[1]);
+                        if (socketIndex >= this.dropdownOptions.length) {
+                            inputsToRemove.push(i);
+                        }
                     }
                 }
                 // Remove in reverse order to maintain indices
@@ -145,22 +164,33 @@ app.registerExtension({
                     this.removeInput(inputsToRemove[i]);
                 }
 
-                // Add new input sockets for each dropdown option
+                // Update existing sockets and add new ones
                 this.outputSockets = [];
                 for (let i = 0; i < this.dropdownOptions.length; i++) {
                     const option = this.dropdownOptions[i];
                     const socketName = `option_${i}`;
                     const socketLabel = option;
                     
-                    this.addInput(socketName, "*", { label: socketLabel });
-                    this.outputSockets.push({
-                        name: socketName,
-                        label: socketLabel,
-                        index: i
-                    });
+                    if (existingSocketMap[socketName]) {
+                        // Update existing socket label
+                        existingSocketMap[socketName].label = socketLabel;
+                        this.outputSockets.push({
+                            name: socketName,
+                            label: socketLabel,
+                            index: i
+                        });
+                    } else {
+                        // Add new socket
+                        this.addInput(socketName, "*", { label: socketLabel });
+                        this.outputSockets.push({
+                            name: socketName,
+                            label: socketLabel,
+                            index: i
+                        });
+                    }
                 }
                 
-                console.log("MapDropdown JS - Created input sockets:", this.outputSockets.map(s => s.name));
+                console.log("MapDropdown JS - Updated input sockets:", this.outputSockets.map(s => s.name));
 
                 // Ensure we have one output socket
                 if (this.outputs.length === 0) {
@@ -252,6 +282,10 @@ app.registerExtension({
             nodeType.prototype.serialize = function () {
                 const data = originalSerialize ? originalSerialize.call(this) : {};
                 data.dropdownOptions = this.dropdownOptions;
+                // Save the connected dropdown ID if it exists
+                if (this.connectedDropdown) {
+                    data.connectedDropdownId = this.connectedDropdown.id;
+                }
                 return data;
             };
 
@@ -265,6 +299,23 @@ app.registerExtension({
                 if (info && info.dropdownOptions) {
                     this.dropdownOptions = info.dropdownOptions;
                     this.updateOutputSockets();
+                }
+                
+                // Store the connected dropdown ID for later restoration
+                if (info && info.connectedDropdownId) {
+                    this.savedConnectedDropdownId = info.connectedDropdownId;
+                }
+            };
+
+            // Method to restore connection after graph is loaded
+            nodeType.prototype.restoreConnection = function () {
+                if (this.savedConnectedDropdownId && this.graph) {
+                    const dropdownNode = this.graph.getNodeById(this.savedConnectedDropdownId);
+                    if (dropdownNode) {
+                        this.connectedDropdown = dropdownNode;
+                        this.updateDropdownOptions();
+                        delete this.savedConnectedDropdownId;
+                    }
                 }
             };
         }
