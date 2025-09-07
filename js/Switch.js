@@ -60,7 +60,7 @@ app.registerExtension({
                     if (boolConnected && this.graph && this.graph.setDirtyCanvas) {
                         this.graph.setDirtyCanvas(true);
                     }
-                }, 100); // Update every 100ms when connected, probably not a good idea
+                }, 500); // Update every 100ms when connected, probably not a good idea
                 // TODO: Figure something else out
                 
                 // Cleanup interval when node is removed

@@ -231,6 +231,10 @@ app.registerExtension({
 
         window.addEventListener("keydown", (e) => {
             if (e.key === "Control") {
+                // Don't interfere with clipboard operations
+                if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 88)) {
+                    return; // Let Ctrl+C, Ctrl+V, Ctrl+X pass through
+                }
                 window.CRZ_ctrl_held = true;
                 window.CRZ_passthrough_show_all_links = window.CRZ_passthrough_hovered && window.CRZ_ctrl_held;
                 if (LiteGraph && LiteGraph.LGraphCanvas && LiteGraph.LGraphCanvas.active_canvas) {
@@ -240,6 +244,10 @@ app.registerExtension({
         });
         window.addEventListener("keyup", (e) => {
             if (e.key === "Control") {
+                // Don't interfere with clipboard operations
+                if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 88)) {
+                    return; // Let Ctrl+C, Ctrl+V, Ctrl+X pass through
+                }
                 window.CRZ_ctrl_held = false;
                 window.CRZ_passthrough_show_all_links = false;
                 if (LiteGraph && LiteGraph.LGraphCanvas && LiteGraph.LGraphCanvas.active_canvas) {
