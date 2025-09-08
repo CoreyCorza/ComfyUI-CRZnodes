@@ -46,7 +46,7 @@ const toggleDashboardConnections = () => {
         background: ${newValue ? '#46975e3a' : '#8046973a'};
         color: white;
         padding: 12px 20px;
-        border-radius: 4px;
+        border-radius: 20px;
         z-index: 10001;
         font-size: 14px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.3);
