@@ -21,8 +21,8 @@ class CRZImageSelector:
             }
         }
 
-    RETURN_TYPES = ("IMAGE", "IMAGE", "IMAGE", "IMAGE", "IMAGE", "IMAGE", "INT")
-    RETURN_NAMES = ("image_1", "image_2", "image_3", "image_4", "image_5", "image_6", "image_count")
+    RETURN_TYPES = ("IMAGE", "IMAGE", "IMAGE", "IMAGE", "IMAGE", "IMAGE", "INT", "IMAGE")
+    RETURN_NAMES = ("image_1", "image_2", "image_3", "image_4", "image_5", "image_6", "image_count", "image_batch")
     FUNCTION = "load_images"
     CATEGORY = "CRZ"
 
@@ -71,7 +71,38 @@ class CRZImageSelector:
         img5 = self.load_image(image_5)
         img6 = self.load_image(image_6)
         
-        return (img1, img2, img3, img4, img5, img6, image_count)
+        # Create image batch from non-empty images
+        images = [img1, img2, img3, img4, img5, img6]
+        non_empty_images = []
+        
+        for i, (img, path) in enumerate(zip(images, image_paths)):
+            if path and path.strip() != "":
+                non_empty_images.append(img)
+        
+        # Create batch similar to MakeImageBatch logic
+        if len(non_empty_images) == 0:
+            # Return a blank 64x64 black image if no images
+            image_batch = torch.zeros((1, 64, 64, 3), dtype=torch.float32)
+        elif len(non_empty_images) == 1:
+            image_batch = non_empty_images[0]
+        else:
+            # Concatenate images, handling different sizes
+            image1 = non_empty_images[0]
+            for image2 in non_empty_images[1:]:
+                if image1.shape[1:] != image2.shape[1:]:
+                    # Resize image2 to match image1 dimensions
+                    import comfy.utils
+                    image2 = comfy.utils.common_upscale(
+                        image2.movedim(-1, 1), 
+                        image1.shape[2], 
+                        image1.shape[1], 
+                        "lanczos", 
+                        "center"
+                    ).movedim(1, -1)
+                image1 = torch.cat((image1, image2), dim=0)
+            image_batch = image1
+        
+        return (img1, img2, img3, img4, img5, img6, image_count, image_batch)
 
 NODE_CLASS_MAPPINGS = {
     "CRZImageSelector": CRZImageSelector,

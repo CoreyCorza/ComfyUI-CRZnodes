@@ -76,10 +76,14 @@ app.registerExtension({
                     });
                 }
                 
-                // Clear all output socket labels
+                // Set output socket labels - keep the batch output visible
                 if (this.outputs) {
-                    this.outputs.forEach(output => {
-                        output.name = output.localized_name = "";
+                    this.outputs.forEach((output, index) => {
+                        if (index === 7) { // 8th output (index 7) is the batch output
+                            output.name = output.localized_name = "🖹";
+                        } else {
+                            output.name = output.localized_name = " ";
+                        }
                     });
                 }
 

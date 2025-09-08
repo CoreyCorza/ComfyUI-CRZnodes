@@ -47,11 +47,24 @@ app.registerExtension({
                     this.outputs[0].name = this.outputs[0].localized_name = "";
                 }
                 
-                // Restore connection after a short delay to ensure graph is fully loaded
-                if (this.savedConnectedDropdownId) {
-                    setTimeout(() => {
-                        this.restoreConnection();
-                    }, 100);
+                // Restore connections after a short delay to ensure graph is fully loaded
+                // Use multiple attempts to ensure restoration works even during undo operations
+                if (this.savedConnectedDropdownId || this.savedInputConnections) {
+                    let attempts = 0;
+                    const maxAttempts = 5;
+                    
+                    const tryRestore = () => {
+                        attempts++;
+                        if (this.restoreConnection()) {
+                            // Success, stop trying
+                            return;
+                        } else if (attempts < maxAttempts) {
+                            // Try again with increasing delay
+                            setTimeout(tryRestore, 100 * attempts);
+                        }
+                    };
+                    
+                    setTimeout(tryRestore, 50);
                 }
             };
 
@@ -73,12 +86,29 @@ app.registerExtension({
                     originalOnConnectionsChange.call(this, type, slotIndex, isConnected, linkInfo, ioSlot);
                 }
 
+                // Skip processing during undo/redo operations to avoid conflicts
+                const stackTrace = new Error().stack;
+                if (stackTrace.includes('undo') || stackTrace.includes('redo') || 
+                    stackTrace.includes('loadGraphData') || stackTrace.includes('pasteFromClipboard')) {
+                    return;
+                }
+
                 // Handle input connection changes (custom dropdown input)
                 if (type === LiteGraph.INPUT && slotIndex === 0) {
                     if (isConnected && linkInfo) {
-                        // A custom dropdown was connected
-                        this.connectedDropdown = this.graph.getNodeById(linkInfo.origin_id);
-                        this.updateDropdownOptions();
+                        // A node was connected - could be dropdown or passthrough
+                        const connectedNode = this.graph.getNodeById(linkInfo.origin_id);
+                        this.connectedDropdown = connectedNode;
+                        
+                        // Find the actual dropdown node through passthrough chains
+                        const actualDropdown = this.findActualDropdownNode(connectedNode);
+                        if (actualDropdown) {
+                            this.updateDropdownOptions();
+                        } else {
+                            // No dropdown found, clear options
+                            this.dropdownOptions = [];
+                            this.updateOutputSockets();
+                        }
                     } else {
                         // Custom dropdown was disconnected
                         this.connectedDropdown = null;
@@ -88,23 +118,130 @@ app.registerExtension({
                 }
             };
 
+            // Method to find the actual dropdown node through any reroute/passthrough chains
+            nodeType.prototype.findActualDropdownNode = function (node) {
+                if (!node) return null;
+                
+                // Check if this is a dropdown node first
+                if (this.isDropdownNode(node)) {
+                    return node;
+                }
+                
+                // Check if this is any type of reroute/passthrough node
+                if (this.isRerouteNode(node)) {
+                    // Follow the input chain to find the source
+                    if (node.inputs && node.inputs.length > 0) {
+                        for (const input of node.inputs) {
+                            if (input.link) {
+                                const inputLink = this.graph.links[input.link];
+                                if (inputLink) {
+                                    const sourceNode = this.graph.getNodeById(inputLink.origin_id);
+                                    const result = this.findActualDropdownNode(sourceNode);
+                                    if (result) return result;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                return null;
+            };
+            
+            // Method to check if a node is a dropdown node
+            nodeType.prototype.isDropdownNode = function (node) {
+                if (!node) return false;
+                
+                // Check various ways a node could be a dropdown
+                return (
+                    // CRZ Custom Dropdown
+                    (node.properties && node.properties.dropdown_options) ||
+                    // Standard dropdown methods
+                    (node.getOptions && typeof node.getOptions === 'function') ||
+                    (node.options && Array.isArray(node.options)) ||
+                    // Widget-based dropdown
+                    (node.widgets && node.widgets.some(w => w.type === "combo" && w.options))
+                );
+            };
+            
+            // Method to check if a node is a reroute/passthrough node
+            nodeType.prototype.isRerouteNode = function (node) {
+                if (!node) return false;
+                
+                // Check for known reroute/passthrough node types
+                const rerouteTypes = [
+                    'Reroute',           // ComfyUI built-in reroute
+                    'CRZPassthrough',    // CRZ passthrough
+                    'Passthrough',       // Generic passthrough
+                    'RerouteNode',       // Alternative naming
+                    'PassThrough',       // Alternative naming
+                    'Bridge',            // Bridge nodes
+                    'Connector',         // Connector nodes
+                    'Link',              // Link nodes
+                    'Wire',              // Wire nodes
+                    'Pipe',              // Pipe nodes
+                    'Tunnel',            // Tunnel nodes
+                    'Proxy',             // Proxy nodes
+                    'Relay'              // Relay nodes
+                ];
+                
+                // Check by type name
+                if (node.type && rerouteTypes.includes(node.type)) {
+                    return true;
+                }
+                
+                // Check by node title/name
+                if (node.title && rerouteTypes.some(type => node.title.includes(type))) {
+                    return true;
+                }
+                
+                // Check for CRZ passthrough specific property
+                if (node.isPassthrough) {
+                    return true;
+                }
+                
+                // Check for reroute-like behavior: single input, single output, minimal functionality
+                if (node.inputs && node.outputs && 
+                    node.inputs.length === 1 && node.outputs.length === 1 &&
+                    (!node.widgets || node.widgets.length === 0) &&
+                    (!node.properties || Object.keys(node.properties).length === 0)) {
+                    return true;
+                }
+                
+                // Check for nodes that have "reroute" or "passthrough" in their name
+                const nodeName = (node.type || '').toLowerCase();
+                const nodeTitle = (node.title || '').toLowerCase();
+                if (nodeName.includes('reroute') || nodeName.includes('passthrough') ||
+                    nodeTitle.includes('reroute') || nodeTitle.includes('passthrough')) {
+                    return true;
+                }
+                
+                return false;
+            };
+
             // Method to update dropdown options from connected dropdown
             nodeType.prototype.updateDropdownOptions = function () {
                 if (!this.connectedDropdown) return;
 
-                // Try to get options from the connected dropdown
+                // Find the actual dropdown node through any passthrough chains
+                const actualDropdown = this.findActualDropdownNode(this.connectedDropdown);
+                if (!actualDropdown) {
+                    console.log("MapDropdown JS - Could not find actual dropdown node");
+                    return;
+                }
+
+                // Try to get options from the actual dropdown
                 let newOptions = [];
                 
                 // Check if it's a CRZ Custom Dropdown
-                if (this.connectedDropdown.properties && this.connectedDropdown.properties.dropdown_options) {
-                    newOptions = this.connectedDropdown.properties.dropdown_options;
-                } else if (this.connectedDropdown.getOptions) {
-                    newOptions = this.connectedDropdown.getOptions();
-                } else if (this.connectedDropdown.options) {
-                    newOptions = this.connectedDropdown.options;
-                } else if (this.connectedDropdown.widgets) {
+                if (actualDropdown.properties && actualDropdown.properties.dropdown_options) {
+                    newOptions = actualDropdown.properties.dropdown_options;
+                } else if (actualDropdown.getOptions) {
+                    newOptions = actualDropdown.getOptions();
+                } else if (actualDropdown.options) {
+                    newOptions = actualDropdown.options;
+                } else if (actualDropdown.widgets) {
                     // Look for dropdown widget
-                    const dropdownWidget = this.connectedDropdown.widgets.find(w => w.type === "combo");
+                    const dropdownWidget = actualDropdown.widgets.find(w => w.type === "combo");
                     if (dropdownWidget && dropdownWidget.options) {
                         newOptions = dropdownWidget.options.values || dropdownWidget.options;
                     }
@@ -222,10 +359,13 @@ app.registerExtension({
             // Override onDrawForeground to show current dropdown info
             nodeType.prototype.onDrawForeground = function (ctx) {
                 if (this.dropdownOptions.length > 0) {
-                    // Get the currently selected value from the connected dropdown
+                    // Get the currently selected value from the actual dropdown through passthrough chains
                     let selectedValue = "None";
-                    if (this.connectedDropdown && this.connectedDropdown.properties) {
-                        selectedValue = this.connectedDropdown.properties.dropdown_value || "None";
+                    if (this.connectedDropdown) {
+                        const actualDropdown = this.findActualDropdownNode(this.connectedDropdown);
+                        if (actualDropdown && actualDropdown.properties) {
+                            selectedValue = actualDropdown.properties.dropdown_value || "None";
+                        }
                     }
                     
                     
@@ -277,7 +417,7 @@ app.registerExtension({
                 }
             };
 
-            // Override serialize to save dropdown options
+            // Override serialize to save dropdown options and input connections
             const originalSerialize = nodeType.prototype.serialize;
             nodeType.prototype.serialize = function () {
                 const data = originalSerialize ? originalSerialize.call(this) : {};
@@ -286,10 +426,22 @@ app.registerExtension({
                 if (this.connectedDropdown) {
                     data.connectedDropdownId = this.connectedDropdown.id;
                 }
+                // Save input connection data for restoration
+                data.inputConnections = [];
+                for (let i = 0; i < this.inputs.length; i++) {
+                    const input = this.inputs[i];
+                    if (input.name.startsWith('option_') && input.link !== null) {
+                        data.inputConnections.push({
+                            inputIndex: i,
+                            inputName: input.name,
+                            linkId: input.link
+                        });
+                    }
+                }
                 return data;
             };
 
-            // Override configure to restore dropdown options
+            // Override configure to restore dropdown options and connections
             const originalConfigure = nodeType.prototype.configure;
             nodeType.prototype.configure = function (info) {
                 if (originalConfigure) {
@@ -305,17 +457,89 @@ app.registerExtension({
                 if (info && info.connectedDropdownId) {
                     this.savedConnectedDropdownId = info.connectedDropdownId;
                 }
+                
+                // Store input connections for restoration
+                if (info && info.inputConnections) {
+                    this.savedInputConnections = info.inputConnections;
+                }
             };
 
             // Method to restore connection after graph is loaded
             nodeType.prototype.restoreConnection = function () {
+                let success = true;
+                
                 if (this.savedConnectedDropdownId && this.graph) {
-                    const dropdownNode = this.graph.getNodeById(this.savedConnectedDropdownId);
-                    if (dropdownNode) {
-                        this.connectedDropdown = dropdownNode;
-                        this.updateDropdownOptions();
+                    const connectedNode = this.graph.getNodeById(this.savedConnectedDropdownId);
+                    if (connectedNode) {
+                        this.connectedDropdown = connectedNode;
+                        
+                        // Find the actual dropdown node through passthrough chains
+                        const actualDropdown = this.findActualDropdownNode(connectedNode);
+                        if (actualDropdown) {
+                            this.updateDropdownOptions();
+                        } else {
+                            // No dropdown found, clear options
+                            this.dropdownOptions = [];
+                            this.updateOutputSockets();
+                        }
                         delete this.savedConnectedDropdownId;
+                    } else {
+                        success = false; // Connected node not found yet
                     }
+                }
+                
+                // Restore input connections
+                if (this.savedInputConnections && this.graph) {
+                    // Check if all required links exist
+                    const allLinksExist = this.savedInputConnections.every(conn => 
+                        this.graph.links.find(l => l.id === conn.linkId)
+                    );
+                    
+                    if (allLinksExist) {
+                        this.restoreInputConnections();
+                    } else {
+                        success = false; // Some links not found yet
+                    }
+                }
+                
+                return success;
+            };
+            
+            // Method to restore input connections
+            nodeType.prototype.restoreInputConnections = function () {
+                if (!this.savedInputConnections || !this.graph) return;
+                
+                for (const connection of this.savedInputConnections) {
+                    // Find the link in the graph
+                    const link = this.graph.links.find(l => l.id === connection.linkId);
+                    if (link) {
+                        // Reconnect the input
+                        const inputIndex = this.inputs.findIndex(input => input.name === connection.inputName);
+                        if (inputIndex !== -1) {
+                            this.inputs[inputIndex].link = connection.linkId;
+                            // Update the link's target information
+                            link.target_id = this.id;
+                            link.target_slot = inputIndex;
+                        }
+                    }
+                }
+                
+                // Clear saved connections
+                delete this.savedInputConnections;
+                
+                // Force redraw
+                if (this.graph && this.graph.setDirtyCanvas) {
+                    this.graph.setDirtyCanvas(true, true);
+                }
+            };
+            
+            // Override onGraphRebuilt to handle restoration after graph rebuilds
+            nodeType.prototype.onGraphRebuilt = function() {
+                // Try to restore connections after graph rebuild
+                if (this.savedConnectedDropdownId || this.savedInputConnections) {
+                    setTimeout(() => {
+                        this.restoreConnection();
+                    }, 100);
                 }
             };
         }
@@ -335,13 +559,74 @@ app.registerExtension({
                         originalOnConnectionsChange.call(this, type, slotIndex, isConnected, linkInfo, ioSlot);
                     }
                     
-                    // Notify connected MapDropdown nodes
+                    // Notify connected MapDropdown nodes (including through passthrough chains)
                     if (type === LiteGraph.OUTPUT && isConnected) {
-                        const targetNode = this.graph.getNodeById(linkInfo.target_id);
-                        if (targetNode && targetNode.updateDropdownOptions) {
-                            targetNode.updateDropdownOptions();
-                        }
+                        this.notifyConnectedMapDropdowns();
                     }
+                };
+                
+                // Add method to notify all connected MapDropdown nodes
+                nodeType.prototype.notifyConnectedMapDropdowns = function() {
+                    if (!this.graph) return;
+                    
+                    // Find all MapDropdown nodes that might be connected to this dropdown
+                    const mapDropdownNodes = Object.values(this.graph._nodes_by_id).filter(node => 
+                        node.type === "CRZMapDropdown"
+                    );
+                    
+                    mapDropdownNodes.forEach(mapDropdown => {
+                        if (mapDropdown.connectedDropdown) {
+                            // Check if this dropdown is in the chain leading to the MapDropdown
+                            const actualDropdown = mapDropdown.findActualDropdownNode(mapDropdown.connectedDropdown);
+                            if (actualDropdown && actualDropdown.id === this.id) {
+                                mapDropdown.updateDropdownOptions();
+                            }
+                        }
+                    });
+                };
+            }
+            
+            // If this is any type of reroute/passthrough node, add change detection for MapDropdown nodes
+            if (nodeData.name && (
+                nodeData.name === "Reroute" ||           // ComfyUI built-in
+                nodeData.name === "CRZPassthrough" ||    // CRZ passthrough
+                nodeData.name.toLowerCase().includes('reroute') ||
+                nodeData.name.toLowerCase().includes('passthrough') ||
+                nodeData.name.toLowerCase().includes('bridge') ||
+                nodeData.name.toLowerCase().includes('connector') ||
+                nodeData.name.toLowerCase().includes('link') ||
+                nodeData.name.toLowerCase().includes('wire') ||
+                nodeData.name.toLowerCase().includes('pipe') ||
+                nodeData.name.toLowerCase().includes('tunnel') ||
+                nodeData.name.toLowerCase().includes('proxy') ||
+                nodeData.name.toLowerCase().includes('relay')
+            )) {
+                const originalOnConnectionsChange = nodeType.prototype.onConnectionsChange;
+                nodeType.prototype.onConnectionsChange = function (type, slotIndex, isConnected, linkInfo, ioSlot) {
+                    if (originalOnConnectionsChange) {
+                        originalOnConnectionsChange.call(this, type, slotIndex, isConnected, linkInfo, ioSlot);
+                    }
+                    
+                    // Notify connected MapDropdown nodes when reroute connections change
+                    if (type === LiteGraph.OUTPUT && isConnected) {
+                        this.notifyConnectedMapDropdowns();
+                    }
+                };
+                
+                // Add method to notify connected MapDropdown nodes
+                nodeType.prototype.notifyConnectedMapDropdowns = function() {
+                    if (!this.graph) return;
+                    
+                    // Find all MapDropdown nodes that might be connected to this reroute
+                    const mapDropdownNodes = Object.values(this.graph._nodes_by_id).filter(node => 
+                        node.type === "CRZMapDropdown"
+                    );
+                    
+                    mapDropdownNodes.forEach(mapDropdown => {
+                        if (mapDropdown.connectedDropdown && mapDropdown.connectedDropdown.id === this.id) {
+                            mapDropdown.updateDropdownOptions();
+                        }
+                    });
                 };
             }
             
