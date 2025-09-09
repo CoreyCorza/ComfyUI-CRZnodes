@@ -5,7 +5,7 @@ app.registerExtension({
     name: "CRZ.MapDropdown",
     async beforeRegisterNodeDef(nodeType, nodeData, app) {
         if (nodeData.name === "CRZMapDropdown") {
-            // Remove title like other CRZ nodes
+            // Remove title 
             nodeType.title_mode = LiteGraph.NO_TITLE;
 
             // Store original methods
@@ -21,8 +21,8 @@ app.registerExtension({
                 this.connectedDropdown = null;
                 this.outputSockets = [];
                 
-                // Move widgets off-screen like other CRZ nodes
-                this.widgets_start_y = -2.4e8*LiteGraph.NODE_SLOT_HEIGHT;
+                // Move widgets off-screen 
+                // this.widgets_start_y = -2.4e8*LiteGraph.NODE_SLOT_HEIGHT;
                 
                 // Ensure we have the custom dropdown input and one output
                 if (this.inputs.length === 0) {
@@ -38,7 +38,7 @@ app.registerExtension({
                 return r;
             };
 
-            // Set input labels like other CRZ nodes
+            // Set input labels 
             nodeType.prototype.onAdded = function() {
                 if (this.inputs && this.inputs.length > 0) {
                     this.inputs[0].localized_name = "Custom Dropdown";
@@ -82,39 +82,49 @@ app.registerExtension({
 
             // Override onConnectionsChange to handle dynamic outputs
             nodeType.prototype.onConnectionsChange = function (type, slotIndex, isConnected, linkInfo, ioSlot) {
-                if (originalOnConnectionsChange) {
-                    originalOnConnectionsChange.call(this, type, slotIndex, isConnected, linkInfo, ioSlot);
-                }
-
-                // Skip processing during undo/redo operations to avoid conflicts
-                const stackTrace = new Error().stack;
-                if (stackTrace.includes('undo') || stackTrace.includes('redo') || 
-                    stackTrace.includes('loadGraphData') || stackTrace.includes('pasteFromClipboard')) {
-                    return;
-                }
-
-                // Handle input connection changes (custom dropdown input)
-                if (type === LiteGraph.INPUT && slotIndex === 0) {
-                    if (isConnected && linkInfo) {
-                        // A node was connected - could be dropdown or passthrough
-                        const connectedNode = this.graph.getNodeById(linkInfo.origin_id);
-                        this.connectedDropdown = connectedNode;
-                        
-                        // Find the actual dropdown node through passthrough chains
-                        const actualDropdown = this.findActualDropdownNode(connectedNode);
-                        if (actualDropdown) {
-                            this.updateDropdownOptions();
-                        } else {
-                            // No dropdown found, clear options
-                            this.dropdownOptions = [];
-                            this.updateOutputSockets();
+                try {
+                    if (originalOnConnectionsChange && typeof originalOnConnectionsChange === 'function') {
+                        try {
+                            originalOnConnectionsChange.call(this, type, slotIndex, isConnected, linkInfo, ioSlot);
+                        } catch (e) {
+                            console.warn("Error in original onConnectionsChange:", e);
                         }
-                    } else {
-                        // Custom dropdown was disconnected
-                        this.connectedDropdown = null;
-                        this.dropdownOptions = [];
-                        this.updateOutputSockets();
                     }
+
+                    // Skip processing during undo/redo operations to avoid conflicts
+                    const stackTrace = new Error().stack;
+                    if (stackTrace.includes('undo') || stackTrace.includes('redo') || 
+                        stackTrace.includes('loadGraphData') || stackTrace.includes('pasteFromClipboard')) {
+                        return;
+                    }
+
+                    // Handle input connection changes (custom dropdown input)
+                    if (type === LiteGraph.INPUT && slotIndex === 0) {
+                        if (isConnected && linkInfo) {
+                            // A node was connected - could be dropdown or passthrough
+                            const connectedNode = this.graph && this.graph.getNodeById ? 
+                                this.graph.getNodeById(linkInfo.origin_id) : null;
+                            this.connectedDropdown = connectedNode;
+                            
+                            // Find the actual dropdown node through passthrough chains
+                            const actualDropdown = this.findActualDropdownNode && 
+                                this.findActualDropdownNode(connectedNode);
+                            if (actualDropdown) {
+                                this.updateDropdownOptions && this.updateDropdownOptions();
+                            } else {
+                                // No dropdown found, clear options
+                                this.dropdownOptions = [];
+                                this.updateOutputSockets && this.updateOutputSockets();
+                            }
+                        } else {
+                            // Custom dropdown was disconnected
+                            this.connectedDropdown = null;
+                            this.dropdownOptions = [];
+                            this.updateOutputSockets && this.updateOutputSockets();
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Error in MapDropdown onConnectionsChange:", e);
                 }
             };
 
@@ -553,37 +563,59 @@ app.registerExtension({
             
             // If this is a custom dropdown node, add change detection
             if (nodeData.name && (nodeData.name.includes("CustomDropdown") || nodeData.name.includes("Dropdown"))) {
-                const originalOnConnectionsChange = nodeType.prototype.onConnectionsChange;
-                nodeType.prototype.onConnectionsChange = function (type, slotIndex, isConnected, linkInfo, ioSlot) {
-                    if (originalOnConnectionsChange) {
-                        originalOnConnectionsChange.call(this, type, slotIndex, isConnected, linkInfo, ioSlot);
+                try {
+                    // Safety check: ensure nodeType and prototype exist
+                    if (!nodeType || !nodeType.prototype) {
+                        return result;
                     }
                     
-                    // Notify connected MapDropdown nodes (including through passthrough chains)
-                    if (type === LiteGraph.OUTPUT && isConnected) {
-                        this.notifyConnectedMapDropdowns();
-                    }
-                };
-                
-                // Add method to notify all connected MapDropdown nodes
-                nodeType.prototype.notifyConnectedMapDropdowns = function() {
-                    if (!this.graph) return;
-                    
-                    // Find all MapDropdown nodes that might be connected to this dropdown
-                    const mapDropdownNodes = Object.values(this.graph._nodes_by_id).filter(node => 
-                        node.type === "CRZMapDropdown"
-                    );
-                    
-                    mapDropdownNodes.forEach(mapDropdown => {
-                        if (mapDropdown.connectedDropdown) {
-                            // Check if this dropdown is in the chain leading to the MapDropdown
-                            const actualDropdown = mapDropdown.findActualDropdownNode(mapDropdown.connectedDropdown);
-                            if (actualDropdown && actualDropdown.id === this.id) {
-                                mapDropdown.updateDropdownOptions();
+                    const originalOnConnectionsChange = nodeType.prototype.onConnectionsChange;
+                    nodeType.prototype.onConnectionsChange = function (type, slotIndex, isConnected, linkInfo, ioSlot) {
+                        if (originalOnConnectionsChange && typeof originalOnConnectionsChange === 'function') {
+                            try {
+                                originalOnConnectionsChange.call(this, type, slotIndex, isConnected, linkInfo, ioSlot);
+                            } catch (e) {
+                                console.warn("Error in original onConnectionsChange:", e);
                             }
                         }
-                    });
-                };
+                        
+                        // Notify connected MapDropdown nodes (including through passthrough chains)
+                        if (type === LiteGraph.OUTPUT && isConnected) {
+                            try {
+                                this.notifyConnectedMapDropdowns();
+                            } catch (e) {
+                                console.warn("Error in notifyConnectedMapDropdowns:", e);
+                            }
+                        }
+                    };
+                    
+                    // Add method to notify all connected MapDropdown nodes
+                    nodeType.prototype.notifyConnectedMapDropdowns = function() {
+                        if (!this.graph) return;
+                        
+                        try {
+                            // Find all MapDropdown nodes that might be connected to this dropdown
+                            const mapDropdownNodes = Object.values(this.graph._nodes_by_id).filter(node => 
+                                node && node.type === "CRZMapDropdown"
+                            );
+                            
+                            mapDropdownNodes.forEach(mapDropdown => {
+                                if (mapDropdown && mapDropdown.connectedDropdown) {
+                                    // Check if this dropdown is in the chain leading to the MapDropdown
+                                    const actualDropdown = mapDropdown.findActualDropdownNode && 
+                                        mapDropdown.findActualDropdownNode(mapDropdown.connectedDropdown);
+                                    if (actualDropdown && actualDropdown.id === this.id) {
+                                        mapDropdown.updateDropdownOptions && mapDropdown.updateDropdownOptions();
+                                    }
+                                }
+                            });
+                        } catch (e) {
+                            console.warn("Error in notifyConnectedMapDropdowns:", e);
+                        }
+                    };
+                } catch (e) {
+                    console.warn("Error setting up dropdown change detection:", e);
+                }
             }
             
             // If this is any type of reroute/passthrough node, add change detection for MapDropdown nodes
@@ -601,33 +633,54 @@ app.registerExtension({
                 nodeData.name.toLowerCase().includes('proxy') ||
                 nodeData.name.toLowerCase().includes('relay')
             )) {
-                const originalOnConnectionsChange = nodeType.prototype.onConnectionsChange;
-                nodeType.prototype.onConnectionsChange = function (type, slotIndex, isConnected, linkInfo, ioSlot) {
-                    if (originalOnConnectionsChange) {
-                        originalOnConnectionsChange.call(this, type, slotIndex, isConnected, linkInfo, ioSlot);
+                try {
+                    // Safety check: ensure nodeType and prototype exist
+                    if (!nodeType || !nodeType.prototype) {
+                        return result;
                     }
                     
-                    // Notify connected MapDropdown nodes when reroute connections change
-                    if (type === LiteGraph.OUTPUT && isConnected) {
-                        this.notifyConnectedMapDropdowns();
-                    }
-                };
-                
-                // Add method to notify connected MapDropdown nodes
-                nodeType.prototype.notifyConnectedMapDropdowns = function() {
-                    if (!this.graph) return;
-                    
-                    // Find all MapDropdown nodes that might be connected to this reroute
-                    const mapDropdownNodes = Object.values(this.graph._nodes_by_id).filter(node => 
-                        node.type === "CRZMapDropdown"
-                    );
-                    
-                    mapDropdownNodes.forEach(mapDropdown => {
-                        if (mapDropdown.connectedDropdown && mapDropdown.connectedDropdown.id === this.id) {
-                            mapDropdown.updateDropdownOptions();
+                    const originalOnConnectionsChange = nodeType.prototype.onConnectionsChange;
+                    nodeType.prototype.onConnectionsChange = function (type, slotIndex, isConnected, linkInfo, ioSlot) {
+                        if (originalOnConnectionsChange && typeof originalOnConnectionsChange === 'function') {
+                            try {
+                                originalOnConnectionsChange.call(this, type, slotIndex, isConnected, linkInfo, ioSlot);
+                            } catch (e) {
+                                console.warn("Error in original onConnectionsChange:", e);
+                            }
                         }
-                    });
-                };
+                        
+                        // Notify connected MapDropdown nodes when reroute connections change
+                        if (type === LiteGraph.OUTPUT && isConnected) {
+                            try {
+                                this.notifyConnectedMapDropdowns();
+                            } catch (e) {
+                                console.warn("Error in notifyConnectedMapDropdowns:", e);
+                            }
+                        }
+                    };
+                    
+                    // Add method to notify connected MapDropdown nodes
+                    nodeType.prototype.notifyConnectedMapDropdowns = function() {
+                        if (!this.graph) return;
+                        
+                        try {
+                            // Find all MapDropdown nodes that might be connected to this reroute
+                            const mapDropdownNodes = Object.values(this.graph._nodes_by_id).filter(node => 
+                                node && node.type === "CRZMapDropdown"
+                            );
+                            
+                            mapDropdownNodes.forEach(mapDropdown => {
+                                if (mapDropdown && mapDropdown.connectedDropdown && mapDropdown.connectedDropdown.id === this.id) {
+                                    mapDropdown.updateDropdownOptions && mapDropdown.updateDropdownOptions();
+                                }
+                            });
+                        } catch (e) {
+                            console.warn("Error in notifyConnectedMapDropdowns:", e);
+                        }
+                    };
+                } catch (e) {
+                    console.warn("Error setting up reroute change detection:", e);
+                }
             }
             
             return result;

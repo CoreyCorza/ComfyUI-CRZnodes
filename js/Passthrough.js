@@ -138,7 +138,7 @@ app.registerExtension({
                     originalOnMouseEnter.call(this, e);
                 }
                 this.isHovered = true;
-                // --- BEGIN: CRZ Passthrough hover logic for show all links ---
+                // --- BEGIN: CRZ Passthrough hover logic ---
                 if (this.isPassthrough) {
                     // Check if hover feature is enabled
                     const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
@@ -146,7 +146,6 @@ app.registerExtension({
                     
                     if (hoverEnabled) {
                         window.CRZ_passthrough_hovered = true;
-                        window.CRZ_passthrough_show_all_links = window.CRZ_passthrough_hovered && (window.CRZ_ctrl_held || (e && e.ctrlKey));
                         if (this.graph && this.graph.canvas) {
                             this.graph.canvas.setDirty(true, true);
                         }
@@ -165,7 +164,7 @@ app.registerExtension({
                     originalOnMouseLeave.call(this, e);
                 }
                 this.isHovered = false;
-                // --- BEGIN: CRZ Passthrough hover logic for show all links ---
+                // --- BEGIN: CRZ Passthrough hover logic ---
                 if (this.isPassthrough) {
                     // Check if hover feature is enabled
                     const prefs = JSON.parse(localStorage.getItem("crz_preferences") || "{}");
@@ -173,7 +172,6 @@ app.registerExtension({
                     
                     if (hoverEnabled) {
                         window.CRZ_passthrough_hovered = false;
-                        window.CRZ_passthrough_show_all_links = false;
                         if (this.graph && this.graph.canvas) {
                             this.graph.canvas.setDirty(true, true);
                         }
@@ -224,38 +222,10 @@ app.registerExtension({
         // Store original method
         const originalRenderLink = LGraphCanvas.prototype.renderLink;
         
-        // --- BEGIN: CRZ Passthrough global state and event listeners ---
+        // --- BEGIN: CRZ Passthrough global state ---
         window.CRZ_passthrough_show_all_links = false;
         window.CRZ_passthrough_hovered = false;
-        window.CRZ_ctrl_held = false;
-
-        window.addEventListener("keydown", (e) => {
-            if (e.key === "Control") {
-                // Don't interfere with clipboard operations
-                if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 88)) {
-                    return; // Let Ctrl+C, Ctrl+V, Ctrl+X pass through
-                }
-                window.CRZ_ctrl_held = true;
-                window.CRZ_passthrough_show_all_links = window.CRZ_passthrough_hovered && window.CRZ_ctrl_held;
-                if (LiteGraph && LiteGraph.LGraphCanvas && LiteGraph.LGraphCanvas.active_canvas) {
-                    LiteGraph.LGraphCanvas.active_canvas.setDirty(true, true);
-                }
-            }
-        });
-        window.addEventListener("keyup", (e) => {
-            if (e.key === "Control") {
-                // Don't interfere with clipboard operations
-                if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 88)) {
-                    return; // Let Ctrl+C, Ctrl+V, Ctrl+X pass through
-                }
-                window.CRZ_ctrl_held = false;
-                window.CRZ_passthrough_show_all_links = false;
-                if (LiteGraph && LiteGraph.LGraphCanvas && LiteGraph.LGraphCanvas.active_canvas) {
-                    LiteGraph.LGraphCanvas.active_canvas.setDirty(true, true);
-                }
-            }
-        });
-        // --- END: CRZ Passthrough global state and event listeners ---
+        // --- END: CRZ Passthrough global state ---
         
         // Listen for preference changes
         window.addEventListener("crz_preferences_changed", (e) => {
@@ -379,14 +349,6 @@ app.registerExtension({
                     return originalRenderLink.call(this, ctx, a, b, link, skip_border, flow, color, start_dir, end_dir, num_sublinks);
                 }
                 
-                // Show all passthrough links if Ctrl+hover is active
-                if (window.CRZ_passthrough_show_all_links) {
-                    const originalAlpha = ctx.globalAlpha;
-                    ctx.globalAlpha = 1.0;
-                    const result = originalRenderLink.call(this, ctx, a, b, link, skip_border, flow, color, start_dir, end_dir, num_sublinks);
-                    ctx.globalAlpha = originalAlpha;
-                    return result;
-                }
 
                 // Show if either passthrough node is hovered (and hover is enabled)
                 const hoverEnabled = prefs.show_passthrough_on_hover !== false; // Default to true

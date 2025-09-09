@@ -13,7 +13,7 @@ app.registerExtension({
     name: "CRZSwitch",
     async beforeRegisterNodeDef(nodeType, nodeData, app) {
         if (nodeData.name === "CRZSwitch") {
-            // Hide the title bar like other CRZ nodes
+            // Hide the title bar 
             nodeType.title_mode = LiteGraph.NO_TITLE;
             nodeType.prototype.getTitle = function() { return ""; };
             nodeType.prototype.onDrawTitle = function() { return false; };

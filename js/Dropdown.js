@@ -51,7 +51,7 @@ app.registerExtension({
                 // Set consistent height 
                 this.size = [NODE_WIDTH, Math.floor(LiteGraph.NODE_SLOT_HEIGHT * NODE_HEIGHT_MULTIPLIER)];
                 
-                // Move widgets off-screen like FloatSlider 
+                // Move widgets off-screen 
                 this.widgets_start_y = -2.4e8*LiteGraph.NODE_SLOT_HEIGHT;
                 
                 // Hide the default widget 
