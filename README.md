@@ -137,7 +137,7 @@ So it does its own thing for now.
 # Noteable Changes
 ## 5th Sept 2025  
 
-If a text display is truncated on a node, a tooltip will appear on mouse hover showing the full text
+If a text display is truncated on a node, a tooltip will appear on mouse hover showing the full text now.  
 ![brave_MyyMf8NVaT](https://github.com/user-attachments/assets/45c4269e-67c2-472d-973d-4a9a59052587)
 
 Keyboard shortcuts integrated into Comfyui. Search for `crz`
