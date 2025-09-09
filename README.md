@@ -116,7 +116,7 @@ There may be cases where they don't - Let me know.
 
 # Preferences
 **By default, link visibility may be off for dashboard nodes. You can turn them on here**  
-There is also the shortcut `alt+backtick` to toggle them quickly.  
+There is also a shortcut to toggle them quickly: `alt+backtick`.  
 You can change this shortcut in comfyui's preferences by searching for `crz`.  See note below.  
 ![brave_xIgGKTvvjW](https://github.com/user-attachments/assets/e052fb4e-88be-456a-895b-a048de119223)
 
