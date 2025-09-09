@@ -72,8 +72,8 @@ Double click the compare node to modify the comparison type.
 ```
 > Is A greater than B?  
 < Is A less than B?  
->= Is A equal to or greater than B?  
-<= Is A equal to or less than B?  
+>= Is A greater than or equal to B? 
+<= Is A less than or equal to B?
 = Does A equal B?
 ```
 ![brave_Iy6iNYmtfn](https://github.com/user-attachments/assets/aa78d3bf-cdf5-49bd-a9dc-419a3c5b3b62)
